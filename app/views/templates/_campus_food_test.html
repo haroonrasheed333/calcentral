@@ -1,0 +1,173 @@
+<script type="text/ng-template" id="templates/campus_food_test.html">
+
+  <div class="cc-page-campus cc-page-campus-food">
+
+    <div class="large-9 push-3 columns cc-page-campus-content">
+
+    <h1>Food &amp; Housing</h1>
+
+    <div class="large-6 columns">
+      <div style="" class="cc-widget">
+        <div class="cc-widget-title">
+          <h2>Cal 1 Card</h2>
+        </div>
+        <div class="cc-page-campus-content-subcontainer">
+          <div class="large-2 columns">
+            <%= image_tag "cal1.png", :size => "50x25", :alt => "", :class => "cc-left" %>
+          </div>
+          <div class="large-10 columns">
+            <h2>Your current balance: </h2>
+
+            <div class="large-5 columns" style="background-color: #EEEEEE;  height: 60px">
+              <p style="font-size: 23px; padding: 8px" data-ng-show="balance" data-ng-bind="balance | currency"></p>
+            </div>
+
+            <div class="large-7 columns">
+              <button class="cc-button cc-right">
+                  <i class="icon-plus cc-button-plus-icon"></i>
+                  <span>Add Meal Points</span>
+              </button>
+
+              <button class="cc-button cc-right">
+                <span>Donate Meal Points</span>
+              </button>
+            </div>
+
+            <a href="http://google.com">Check Transactions</a>
+
+          </div>
+        </div>
+      </div>
+
+      <div style="" class="cc-widget">
+        <div class="cc-widget-title">
+          <h2>Today&apos;s Menu</h2>
+        </div>
+      </div>
+    </div>
+    <div class="large-6 columns">
+      <div style="" class="cc-widget">
+        <div class="cc-widget-title">
+          <h2>Twitter Feed</h2>
+        </div>
+      </div>
+
+      <div style="" class="cc-widget">
+        <div class="cc-widget-title">
+          <h2>Links</h2>
+        </div>
+
+        <div class="cc-page-campus-content-subcontainer">
+          <h3>Campus Dining</h3>
+
+          <ul class="cc-list-links">
+            <li>
+              <a target="_blank" href="http://services.housing.berkeley.edu/c1c/static/index.htm" class="cc-outbound-link">Cal 1 Card<span class="cc-outbound-link cc-visuallyhidden"> - opens in new window</span></a>
+            </li>
+            <li>
+              <a target="_blank" href="http://caldining.berkeley.edu/" class="cc-outbound-link">CalDining<span class="cc-outbound-link cc-visuallyhidden"> - opens in new window</span></a>
+            </li>
+          </ul>
+        </div><div class="cc-page-campus-content-subcontainer" >
+          <h3>Family</h3>
+
+          <ul class="cc-list-links">
+            <li>
+              <a target="_blank" href="http://www.housing.berkeley.edu/child/" class="cc-outbound-link" title="Campus child care services">Child Care<span class="cc-outbound-link cc-visuallyhidden"> - opens in new window</span></a>
+            </li>
+          </ul>
+        </div><div class="cc-page-campus-content-subcontainer">
+          <h3>Housing</h3>
+
+          <ul class="cc-list-links">
+            <li>
+              <a target="_blank" href="http://www.bsc.coop/" class="cc-outbound-link" title="">Berkeley Student Cooperative<span class="cc-outbound-link cc-visuallyhidden"> - opens in new window</span></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div id="cc-local-navigation" class="large-3 pull-9 columns cc-page-campus-navigation">
+      <div>
+        <h3>Academic</h3>
+        <ul>
+          <li>
+            <a href="/campus/academicdepartments">Academic Departments</a>
+          </li>
+          <li>
+            <a href="/campus/academicplanning">Academic Planning</a>
+          </li>
+          <li>
+            <a href="/campus/classes">Classes</a>
+          </li>
+          <li>
+            <a href="/campus/faculty">Faculty</a>
+          </li>
+          <li>
+            <a href="/campus/stafflearning">Staff Learning</a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h3>Administrative</h3>
+        <ul>
+          <li>
+            <a href="/campus/campusdepartments">Campus Departments</a>
+          </li>
+          <li>
+            <a href="/campus/communicationcollaboration">Communication &amp; Collaboration</a>
+          </li>
+          <li>
+            <a href="/campus/policiesproceedures">Policies &amp; Procedures</a>
+          </li>
+          <li>
+            <a href="/campus/sharedservices">Shared Service Center</a>
+          </li>
+          <li>
+            <a href="/campus/toolsresources">Tools &amp; Resources</a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h3>Personal</h3>
+        <ul>
+          <li>
+            <a href="/campus/career">Career</a>
+          </li>
+          <li>
+            <a href="/campus/finances">Finances</a>
+          </li>
+          <li>
+            <a href="/campus/food">Food &amp; Housing</a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h3>Campus Life</h3>
+        <ul>
+          <li>
+            <a href="/campus/community">Community</a>
+          </li>
+          <li>
+            <a href="/campus/gettingaround">Getting Around</a>
+          </li>
+          <li>
+            <a href="/campus/recreationentertainment">Recreation &amp; Entertainment</a>
+          </li>
+          <li>
+            <a href="/campus/safetyemergencyinfo">Safety &amp; Emergency Information</a>
+          </li>
+          <li>
+            <a href="/campus/studentgroups">Student Engagement</a>
+          </li>
+          <li>
+            <a href="/campus/supportservices">Support Services</a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</script>

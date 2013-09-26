@@ -36,6 +36,11 @@
       templateUrl: 'templates/campus.html',
       controller: 'CampusController'
     }).
+    when('/campus/food', {
+      templateUrl: 'templates/campus_food_test.html',
+      controller: 'CaloneController',
+      isPublic: true
+    }).
     when('/campus/:category', {
       templateUrl: 'templates/campus.html',
       controller: 'CampusController'
