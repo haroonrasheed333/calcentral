@@ -99,7 +99,8 @@ class HotPlate < TorqueBox::Messaging::MessageProcessor
       }
 
     ensure
-      ActiveRecord::Base.clear_active_connections!
+      ActiveRecordHelper.clear_active_connections
+      ActiveRecordHelper.clear_stale_connections
     end
 
   end
@@ -120,6 +121,9 @@ class HotPlate < TorqueBox::Messaging::MessageProcessor
       UserCacheWarmer.do_warm uid
     rescue Exception => e
       logger.error "#{self.class.name} Got exception while warming cache for user #{uid}: #{e}. Backtrace: #{e.backtrace.join("\n")}"
+    ensure
+      ActiveRecordHelper.clear_active_connections
+      ActiveRecordHelper.clear_stale_connections
     end
   end
 
