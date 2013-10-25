@@ -18,8 +18,6 @@
       $scope,
       apiService) {
 
-    var transTypes = [];
-
     var parseDate = function(obj, i) {
       var regex = /^(\d{4})[\-](0?[1-9]|1[012])[\-](0?[1-9]|[12][0-9]|3[01])$/;
       var item = obj[i] + '';
@@ -42,22 +40,21 @@
       var item = obj[i];
       var test = Object.prototype.toString.call(item) === '[object Date]';
       if (test) {
-        obj.transDueDateShow = $filter('date')(item, 'MMM d');
-        if (obj.transStatus === 'PastDue') {
+        obj.transDueDateShow = $filter('date')(item, 'MM/dd/yy');
+        if (obj.transStatus === 'Past due') {
           obj._isPastDueDate = true;
+          obj._isDueNow = '1_past_due'; // Past due
+        } else if (obj.transStatus !== 'Closed') {
+          obj._isDueNow = '2_current_due'; // Current due
         }
       }
-    };
-
-    var addToTranstypes = function(element) {
-      if (transTypes.indexOf(element.transType) === -1) {
-        transTypes.push(element.transType);
+      if (!obj._isDueNow) {
+        obj._isDueNow = 0; // Closed
       }
     };
 
-    var parseData = function() {
-      transTypes = [];
-      var finances = angular.copy($scope.myfinances);
+    var parseData = function(data) {
+      var finances = angular.copy(data);
       for (var i in finances.summary) {
         if (finances.summary.hasOwnProperty(i)){
           parseDate(finances.summary, i);
@@ -70,7 +67,6 @@
           if (element.hasOwnProperty(j)){
 
             parseDate(element, j);
-            addToTranstypes(element);
             if (j === 'transDueDate') {
               parseDueDate(element, j);
             }
@@ -78,25 +74,82 @@
         }
       });
       $scope.myfinances = finances;
-      $scope.transTypes = transTypes.sort();
+    };
+
+    /**
+     * Sort the terms
+     * First "Payments" then "All" and then the terms in descending order
+     */
+    var sortTerms = function(a, b) {
+      if (a.transTermYr !== b.transTermYr) {
+        return b.transTermYr - a.transTermYr;
+      }
+
+      if (a.transTermCd > b.transTermCd) {
+        return 1;
+      } else if (a.transTermCd < b.transTermCd) {
+        return -1;
+      }
+    };
+
+    /**
+     * Select the current term when it exists
+     */
+    var selectCurrentTerm = function(addedTerms, terms) {
+      var current_term = $scope.myfinances.current_term;
+      var to_select_term = '';
+
+      if (addedTerms.indexOf(current_term) !== -1) {
+        // When the current term actually exists in the list, we select it
+        to_select_term = $scope.myfinances.current_term;
+      } else {
+        // Otherwise we select the 2nd item in the list
+        to_select_term = terms[1] ? terms[1].value : terms[0].value;
+      }
+
+      $scope.search = {
+        'transTerm': to_select_term
+      };
     };
 
     var createTerms = function() {
       var terms = [];
+      var addedTerms = [];
       for (var i = 0; i < $scope.myfinances.activity.length; i++){
         var item = $scope.myfinances.activity[i];
 
-        if (terms.indexOf(item.transTerm) === -1) {
-          terms.push(item.transTerm);
+        if (addedTerms.indexOf(item.transTerm) === -1) {
+          addedTerms.push(item.transTerm);
+
+          if (item.transTerm === 'Payment' || item.transTerm === 'Payments') {
+            // A payment doesn't have a year associate to it so we add a bogus one
+            item.transTermYr = 9999;
+          }
+          terms.push({
+            'transTermYr': item.transTermYr,
+            'transTermCd': item.transTermCd,
+            'label': item.transTerm,
+            'value': item.transTerm
+          });
         }
       }
+      terms.push({
+        'label': 'All',
+        'value': '',
+        'transTermYr': 9998
+      });
+
+      terms = terms.sort(sortTerms);
+
       $scope.myfinances.terms = terms;
+
+      selectCurrentTerm(addedTerms, terms);
     };
 
     var statuses = {
-      'open': ['Current','PastDue','Future', 'Error', 'Unapplied'],
-      'minimumamountdue': ['Current','PastDue'],
-      'all': ['Current','PastDue','Future', 'Closed', 'Error', 'Unapplied']
+      'open': ['Current','Past due','Future', 'Error', 'Unapplied', 'Installment', 'Open'],
+      'minimumamountdue': ['Current','Past due'],
+      'all': ['Current','Past due','Future', 'Closed', 'Error', 'Unapplied', 'Installment', 'Open']
     };
 
     /**
@@ -107,25 +160,7 @@
       for (var i = 0; i < $scope.myfinances.activity.length; i++){
         var item = $scope.myfinances.activity[i];
 
-        if (statusArray.indexOf(item.transStatus) !== -1 && item.transType !== 'Refund') {
-          count++;
-        }
-      }
-      if (count !== 0) {
-        $scope.countButtons++;
-      }
-      return count;
-    };
-
-    /**
-     * Cound how many refunds someone has
-     */
-    var createCountRefund = function() {
-      var count = 0;
-      for (var i = 0; i < $scope.myfinances.activity.length; i++){
-        var item = $scope.myfinances.activity[i];
-
-        if (item.transType === 'Refund') {
+        if (statusArray.indexOf(item.transStatus) !== -1) {
           count++;
         }
       }
@@ -142,10 +177,8 @@
       $scope.countButtons = 0;
       $scope.counts = {
         'open': createCount(statuses.open),
-        'refunds': createCountRefund(),
         'all': createCount(statuses.all)
       };
-      $scope.countButtonsClass = $scope.countButtons === 1 ? 'cc-page-myfinances-100' : 'cc-even-' + $scope.countButtons;
     };
 
     /**
@@ -169,10 +202,10 @@
       // Data contains all the financial information for the current student
       $http.get('/api/my/financials').success(function(data) {
 
-        $scope.myfinances = data;
+        angular.extend($scope, data);
 
         if (data && data.summary && data.activity) {
-          parseData();
+          parseData(data);
 
           createTerms();
 
@@ -204,10 +237,10 @@
      */
     $scope.changeSorting = function(column) {
       var sort = $scope.sort;
-      if (sort.column === column) {
+      if (angular.equals(sort.column, [column])) {
         sort.descending = !sort.descending;
       } else {
-        sort.column = column;
+        sort.column = [column];
         sort.descending = false;
       }
     };
@@ -225,19 +258,14 @@
       }
     });
 
-    // TODO, ideally we would be getting this from the back-end
-    $scope.currentTerm = 'Fall 2013';
+    $scope.$watch('search.transTerm', function(transTerm) {
+      if (transTerm) {
+        $scope.search_term = transTerm;
+      }
+    });
 
     $scope.statusFilter = function(item) {
       return ($scope.searchStatuses.indexOf(item.transStatus) !== -1);
-    };
-
-    $scope.notrefundFilter = function(item) {
-      if ($scope.notrefund && item.transType === 'Refund') {
-        return false;
-      } else {
-        return true;
-      }
     };
 
     // We need to wait until the user is loaded

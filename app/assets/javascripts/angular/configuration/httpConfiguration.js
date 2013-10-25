@@ -9,13 +9,13 @@
   calcentral.config(['$httpProvider', function($httpProvider) {
 
     // Add the HTTP error service
-    $httpProvider.responseInterceptors.push('httpErrorInterceptorService');
+    $httpProvider.interceptors.push('httpErrorInterceptorService');
 
     // Add the spinner service
-    $httpProvider.responseInterceptors.push('spinnerInterceptorService');
+    $httpProvider.interceptors.push('spinnerInterceptorService');
 
     // Add the location bar service
-    $httpProvider.responseInterceptors.push('locationbarInterceptorService');
+    $httpProvider.interceptors.push('locationbarInterceptorService');
 
   }]);
 

@@ -17,10 +17,7 @@ class FinancialsProxy < BaseProxy
       student_id = lookup_student_id
       if student_id.nil?
         logger.info "Lookup of student_id for uid #@uid failed, cannot call CFV API path #{path}"
-        {
-          body: "Lookup of student_id for uid #@uid failed, cannot call CFV API",
-          status_code: 400
-        }
+        return nil
       else
         url = "#{Settings.financials_proxy.base_url}#{path}"
         logger.info "Fake = #@fake; Making request to #{url} on behalf of user #{@uid}, student_id = #{student_id}; cache expiration #{self.class.expires_in}"
@@ -32,7 +29,9 @@ class FinancialsProxy < BaseProxy
             )
           }
           if response.code >= 400
-            logger.error "Connection failed: #{response.code} #{response.body}; url = #{url}"
+            unless response.code == 404
+              logger.error "Connection failed: #{response.code} #{response.body}; url = #{url}"
+            end
             return nil
           end
 

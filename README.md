@@ -23,7 +23,7 @@ brew update
 brew install postgresql
 initdb /usr/local/var/postgres
 ```
-__For Mountain Lion users ONLY:__ There's a few [extra steps](https://coderwall.com/p/1mni7w).
+__For Mountain Lion users ONLY:__ There's a few [extra steps](http://nextmarvel.net/blog/2011/09/brew-install-postgresql-on-os-x-lion/).
 
 
 2. Start postgres, add the user and create the necessary databases
@@ -77,16 +77,13 @@ export JRUBY_OPTS="-Xcext.enabled=true -J-d32 -J-client -X-C"
 bundle install
 ```
 
-8. Copy and update the settings
+8. Set up a local settings directory:
 ```
 mkdir ~/.calcentral_config
-cp config/settings.yml ~/.calcentral_config/settings.local.yml
-cp config/settings/testext.yml ~/.calcentral_config/testext.local.yml
-cp config/settings/development.yml ~/.calcentral_config/development.local.yml
-cp config/settings/production.yml ~/.calcentral_config/production.local.yml
 ```
-and update the settings in the `.local.yml` files.
-Settings live outside of the project dir to prevent accidental commits to the repo.
+Default settings are loaded from your source code in `config/settings.yml` and `config/settings/ENVIRONMENT_NAME.yml`. For example, the configuration used when running tests with `RAILS_ENV=test` is determined by the combination of `config/settings/test.yml` and `config/settings.yml`.
+Because we don't store passwords and other sensitive data in source code, any RAILS_ENV other than `test` requires overriding some default settings.
+Do this by creating `ENVIRONMENT.local.yml` files in your `~/.calcentral_config` directory. For example, your `~.calcentral_config/development.local.yml` file may include access tokens and URLs for a locally running Canvas server.
 You can also create Ruby configuration files like "settings.local.rb" and "development.local.rb" to amend the standard `config/environments/*.rb` files.
 
 9. Install JDBC driver (for Oracle connection)
@@ -118,25 +115,16 @@ Do not use 127.0.0.1:3000, as you will not be able to grant access to bApps.
 In order to have live updates you'll need to perform the following steps:
 
 1. Install and run memcached
-1. Add the following lines to development.local.yml:
+
+2. Add the following lines to development.local.yml
 ```
 messaging:
-  enabled: true
+        enabled: true
+cache:
+        store: "memcached"
 ```
-1. In development.rb change the cache store option to
-```
-# Caching store
-config.cache_store = ActiveSupport::Cache.lookup_store(
-    :dalli_store,
-    *Settings.cache.servers,
-    {
-        :expires_in => Settings.cache.maximum_expires_in,
-        :namespace => ServerRuntime.get_settings["git_commit"],
-        :race_condition_ttl => Settings.cache.race_condition_ttl
-    }
-)
-```
-1. start the server with torquebox
+
+3. start the server with torquebox
 
 
 ## Front-end Testing

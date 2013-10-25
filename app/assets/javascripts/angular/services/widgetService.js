@@ -2,7 +2,7 @@
 
   'use strict';
 
-  angular.module('calcentral.services').service('widgetService', ['analyticsService', function(analyticsService) {
+  angular.module('calcentral.services').service('widgetService', ['analyticsService', '$timeout', function(analyticsService, $timeout) {
 
     /**
      * Toggle whether an item for a widget should be shown or not
@@ -17,9 +17,11 @@
       item._show = !item._show;
 
       // Hide all the other items
-      for (var i = 0; i < items.length; i++) {
-        if (items[i].$$hashKey !== item.$$hashKey) {
-          items[i]._show = false;
+      if (angular.isArray(items)) {
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].$$hashKey !== item.$$hashKey) {
+            items[i]._show = false;
+          }
         }
       }
 
@@ -34,7 +36,8 @@
 
       // Scroll to element so it is in the browsers viewport
       if (event && event.toElement && item._show) {
-        event.toElement.scrollIntoView();
+        var scrollIntoView = function() {event.toElement.scrollIntoView()};
+        $timeout(scrollIntoView, 1);
       }
 
       analyticsService.trackEvent(['Detailed view', item._show ? 'Open' : 'Close', widget]);

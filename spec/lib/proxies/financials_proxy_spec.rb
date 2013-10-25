@@ -3,7 +3,7 @@ require 'spec_helper'
 describe FinancialsProxy do
 
   let(:live_oski_financials) { FinancialsProxy.new({user_id: "61889"}).get }
-  let(:fake_tammi_financials) { FinancialsProxy.new({user_id: "300939", fake: true}).get }
+  let(:fake_tammi_financials) { FinancialsProxy.new({user_id: "300940", fake: true}).get }
   let(:fake_oski_financials) { FinancialsProxy.new({user_id: "61889", fake: true}).get }
   let(:non_student_financials) { FinancialsProxy.new({user_id: "212377"}).get }
 
@@ -26,8 +26,7 @@ describe FinancialsProxy do
 
   context "non-student should not get any financials" do
     subject { non_student_financials }
-    its([:body]) { should == "Lookup of student_id for uid 212377 failed, cannot call CFV API" }
-    its([:status_code]) { should == 400 }
+    it { should be_nil }
   end
 
   context "fake oski financials" do

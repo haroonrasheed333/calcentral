@@ -4,10 +4,10 @@
     data-cc-spinner-directive>
     <div data-ng-show="can_view_academics">
       <div class="column">
-        <h1>My Academics</h1>
+        <h1 class="cc-heading-page-title">My Academics</h1>
       </div>
 
-      <div class="large-8 columns cc-academics-page-left" data-ng-show="api.user.profile.roles.student">
+      <div class="large-8 columns cc-academics-page-left" data-ng-show="api.user.profile.student_info.has_student_history">
         <div class="cc-widget">
           <div class="cc-widget-title">
             <h2>Records</h2>
@@ -142,7 +142,8 @@
                     </tr>
                   </thead>
                   <tbody data-ng-repeat="block in regblocks.active_blocks | orderBy:'blocked_date.epoch':true">
-                    <tr class="cc-widget-list-hover"
+                    <tr class="cc-widget-table-hover"
+                       data-ng-class="{'cc-widget-table-hover-opened':(block._show)}"
                        data-cc-accessible-focus-directive
                        data-ng-click="api.widget.toggleShow($event, regblocks.active_blocks, block, 'Active Blocks')">
                       <td><i class="icon-exclamation-sign"></i><span data-ng-bind="block.type"></span></td>
@@ -161,7 +162,7 @@
                         </button>
                       </td>
                     </tr>
-                    <tr data-ng-show="block._show_regblock_definition">
+                    <tr data-ng-show="block._show_regblock_definition && block._show">
                       <td colspan="4">
                         <p>
                           A registration block prevents you from being "officially registered" as a student who is attending U.C. Berkeley. You must have both enrolled in classes and paid your fees to be an "officially registered" student.
@@ -179,7 +180,7 @@
               </div>
               <div data-ng-show="!regblocks.available">
                 <div class="row collapse">
-                  <div class="large-6 columns end"><i class="icon-warning-sign cc-unavailable"></i>Block message is currently unavilable.</div>
+                  <div class="large-6 columns end"><i class="icon-warning-sign cc-unavailable"></i>Block message is currently unavailable.</div>
                 </div>
               </div>
               <div class="cc-academics-showhide-block-history" data-ng-show="regblocks.available">
@@ -243,7 +244,7 @@
           </div>
         </div>
       </div>
-      <div class="large-4 columns" data-ng-class="{'pull-8':(!api.user.profile.roles.student)}">
+      <div class="large-4 columns" data-ng-class="{'pull-8':(!api.user.profile.student_info.has_student_history)}">
         <div class="cc-widget cc-widget-last" data-ng-show="teaching_length">
           <div class="cc-widget-title">
             <h2>Teaching</h2>
@@ -261,7 +262,7 @@
           </div>
         </div>
 
-        <div class="cc-widget cc-widget-last" data-ng-show="api.user.profile.roles.student && semesters.length">
+        <div class="cc-widget cc-widget-last" data-ng-show="api.user.profile.student_info.has_student_history && semesters.length">
           <div class="cc-widget-title">
             <h2 class="cc-left">Semesters</h2>
             <a href="https://telebears.berkeley.edu/tranreq/" class="cc-right cc-academics-orderlink">
@@ -274,7 +275,7 @@
             <div class="cc-table cc-academics-semester cc-academics-semester-{{semester.time_bucket}}" data-ng-repeat="semester in semesters">
               <div>
                 <h3><a data-ng-href="/academics/semester/{{semester.slug}}" data-ng-bind="semester.name"></a></h3>
-                <table>
+                <table data-ng-show="semester.classes">
                   <thead>
                     <tr>
                       <th width="25%" scope="col">Class</th>
@@ -300,15 +301,15 @@
                   <table>
                     <thead>
                       <tr>
-                        <th width="25%" scope="col">Phase</th>
-                        <th width="35%" scope="col">Start Date</th>
-                        <th width="40%" scope="col">Start Time</th>
+                        <th width="10%" scope="col">Phase</th>
+                        <th width="40%" scope="col" class="cc-telebears-date-padding">Start Date</th>
+                        <th width="50%" scope="col">Start Time</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr data-ng-repeat="phase in telebears.phases">
-                        <td data-ng-bind="phase.period.substr(17,2)"></td>
-                        <td data-ng-bind="phase.startTime.epoch * 1000 | date:'EEE MMM d'"></td>
+                        <td data-ng-bind="phase.period" class="cc-telebears-phase-center"></td>
+                        <td data-ng-bind="phase.startTime.epoch * 1000 | date:'EEE MMM d'" class="cc-telebears-date-padding"></td>
                         <td data-ng-bind="phase.startTime.epoch * 1000 | date:'h:mm a'"></td>
                       </tr>
                     </tbody>

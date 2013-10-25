@@ -41,6 +41,9 @@
   ul {
     margin-left: 35px;
   }
+  .cc-table-center {
+    text-align: center;
+  }
   .cc-table-right {
     text-align: right;
   }
@@ -49,6 +52,14 @@
   }
   @media only screen and (max-width: 767px) {
     overflow: auto;
+  }
+}
+.cc-table-sortable {
+  th {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
   }
 }
 .cc-table-top-border {

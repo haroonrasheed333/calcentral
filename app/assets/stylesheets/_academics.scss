@@ -1,17 +1,7 @@
 .cc-page-academics {
   overflow: hidden;
-  h1, h2, h3, h4 {
+  h2, h3, h4 {
     color: $cc-color-medium-grey;
-  }
-  h1 {
-    font-size: 22px;
-    font-weight: normal;
-    margin-bottom: 0;
-    margin-left: 10px;
-    margin-top: 10px;
-    @media only screen and (max-width: 767px) {
-      margin-bottom: 15px;
-    }
   }
   h3 {
     font-size: 16px;
@@ -86,7 +76,7 @@
     font-size: 14px;
   }
   .cc-academics-orderlink {
-    margin: 10px;
+    margin: 13px 10px 0 0;
   }
   .cc-academics-page-left {
     .row {
@@ -185,7 +175,7 @@
     margin-top: 20px;
     padding: 0 10px 10px 10px;
 
-    .cc-widget-list-hover {
+    .cc-widget-list-hover, .cc-widget-table-hover {
       padding: 0;
       i {
         padding-right: 5px;
@@ -201,6 +191,10 @@
     }
   }
   .cc-academics-telebears {
+    h3 {
+      font-size: 13px;
+      font-weight: bold;
+    }
     h4 {
       font-size: 12px;
       font-weight: bold;
@@ -215,16 +209,22 @@
       margin-left: 10px;
       overflow: hidden;
       padding-left: 10px;
+      padding-bottom: 2px;
     }
     .cc-adviser-message-container {
       padding: 10px 0;
     }
     .cc-more-info {
+      font-size: 12px;
+      margin-left: 30px;
       padding-top: 10px;
     }
     .cc-telebears-phases {
       overflow: hidden;
       padding-bottom: 10px;
+      ul {
+        font-size: 0.9em;
+      }
     }
     .cc-telebears-time-tag {
       color: $cc-color-lighter-medium-grey;
@@ -241,9 +241,15 @@
   }
   .cc-academics-semesters-telebears {
     h4 {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
       margin-top: 15px;
+    }
+    .cc-telebears-phase-center {
+      text-align: center;
+    }
+    .cc-telebears-date-padding {
+      padding-left: 20px;
     }
   }
 }

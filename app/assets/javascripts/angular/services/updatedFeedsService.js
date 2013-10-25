@@ -4,9 +4,12 @@
 
   angular.module('calcentral.services').service('updatedFeedsService', [
     '$http',
-    '$timeout', function(
+    '$timeout',
+    'userService',
+    function(
       $http,
-      $timeout) {
+      $timeout,
+      userService) {
 
     var events = {
       is_loading: false,
@@ -18,7 +21,14 @@
     var polling_time = 60; // Polling time in seconds
 
     // In the first iteration, we only update the services on the dashboard page.
-    var to_update_services = ['MyActivities::Merged', 'MyClasses', 'MyGroups', 'MyTasks::Merged', 'MyUpNext'];
+    var to_update_services = [
+      'MyActivities::Merged',
+      'MyBadges::Merged',
+      'MyClasses',
+      'MyGroups',
+      'MyTasks::Merged',
+      'MyUpNext'
+    ];
 
     /**
      * Check whether there are updated to any of the feeds.
@@ -75,6 +85,10 @@
       $http.get('/api/my/updated_feeds').success(function(data) {
       //$http.get('/dummy/json/updated_feeds.json').success(function(data) {
         parseUpdatedFeeds(data, auto_refresh);
+      }).error(function(data, response_code) {
+        if (response_code && response_code === 401) {
+          userService.signOut();
+        }
       });
 
       if (events.is_loading) {

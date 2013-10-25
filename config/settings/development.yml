@@ -8,6 +8,8 @@ blog_latest_release_notes_feed_proxy:
   fake: true
 
 cache:
+  store: "memory"
+  log_level: <%= Logger::DEBUG %>
   expiration:
     default: <%= 35.minutes %>
     MyAcademics::Merged: <%= 1.day %>
@@ -36,6 +38,7 @@ google_proxy:
 logger:
   level: <%= ENV['LOGGER_LEVEL'] || DEBUG %>
   stdout: <%= ENV['LOGGER_STDOUT'] || true %>
+  slow_query_threshold_in_ms: 2000
 
 messaging:
   enabled: false
@@ -52,3 +55,19 @@ postgres:
 
 sakai_proxy:
   fake: true
+
+ist_jms:
+  fake: true
+  enabled: false
+
+hot_plate:
+  enabled: false
+
+features:
+  live_campus_links_data: true
+  user_whitelist: true
+  academic_status: true
+  my_fin_aid: true
+  activity_to_task: true
+  financials: true
+  telebears: true

@@ -5,7 +5,7 @@
     data-ng-show="can_view_academics"
   >
     <div>
-      <h1 class="cc-ellipsis cc-left">
+      <h1 class="cc-heading-page-title cc-ellipsis cc-left">
         <a href="/academics">My Academics</a> &raquo; <span data-ng-bind="selected_semester.name"></span>
       </h1>
     </div>
@@ -17,7 +17,7 @@
       <span class="cc-academics-next cc-academics-prev-next-disabled" data-ng-hide="next_semester.slug">Next semester</span>
     </div>
 
-    <div class="large-8 columns cc-academics-page-left cc-clearfix">
+    <div class="large-8 columns cc-academics-page-left cc-clearfix" data-ng-hide="!selected_courses.length && selected_semester.time_bucket === 'future'">
       <div class="cc-widget">
         <div class="cc-widget-title">
           <h2>Enrollment</h2>
@@ -27,14 +27,14 @@
           <div class="cc-table">
             <table>
               <thead>
-                <th scope="col">Course Number</th>
+                <th scope="col" class="cc-table-right-spacing">Course Number</th>
                 <th scope="col">Title</th>
                 <th scope="col">Grade Option</th>
                 <th class="cc-table-right" scope="col">Units</th>
               </thead>
               <tbody data-ng-show="selected_courses.length" data-ng-repeat="course in enrolled_courses">
                 <tr>
-                  <td>
+                  <td class="cc-table-right-spacing">
                     <a data-ng-href="/academics/semester/{{selected_semester.slug}}/class/{{course.slug}}"
                        data-ng-bind="course.course_number">
                     </a>
@@ -111,32 +111,32 @@
       </div>
     </div>
 
-    <div class="large-4 columns">
+    <div class="large-4 columns" data-ng-class="{'pull-8 cc-clearfix':(!selected_courses.length && selected_semester.time_bucket === 'future')}">
       <div class="cc-academics-telebears cc-widget cc-widget-last" data-ng-if="telebears.slug === selected_semester.slug">
         <div class="cc-widget-title">
           <h2>Appointments</h2>
         </div>
         <div class="cc-widget-padding cc-clearfix-container">
           <div>
-            <h3 class="cc-left">Tele-BEARS for {{ telebears.term }} {{ telebears.year }}</h3>
-            <strong class="cc-more-info cc-right"><a data-ng-href="{{telebears.url}}">More Info</a></strong>
+            <h3 class="cc-left">Tele-BEARS for {{ telebears.term }} {{ telebears.year }}
+            <strong class="cc-more-info"><a data-ng-href="{{telebears.url}}">More Info</a></strong></h3>
           </div>
           <div class="cc-clearfix cc-adviser-message-container">
             <i class="cc-left" data-ng-class="{true:'icon-exclamation-sign',false:'icon-ok-sign'}[telebears.adviser_code_required.required]">
             </i>
             <div class="cc-adviser-message" data-ng-bind="telebears.adviser_code_required.message"></div>
           </div>
-          <div class="cc-telebears-phases">
-            <div data-ng-repeat="phase in telebears.phases">
-              <h4 data-ng-bind="phase.period"></h4>
+          <div>
+            <div class="cc-telebears-phases" data-ng-repeat="phase in telebears.phases">
+              <h4 data-ng-bind-template="Tele-BEARS Phase {{phase.period}}"></h4>
               <ul>
                 <li>
                   <div class="columns large-2 small-3"><strong class="cc-telebears-time-tag">Start</strong></div>
-                  <div class="columns large-10 small-9" data-ng-bind="phase.startTime.epoch * 1000 | date:'EEEE MM/dd/yy | h:mm a'"></div>
+                  <div class="columns large-10 small-9" data-ng-bind="phase.startTime.epoch * 1000 | date:'EEE MMM d | h:mm a'"></div>
                 </li>
                 <li>
                   <div class="columns large-2 small-3"><strong class="cc-telebears-time-tag">End</strong></div>
-                  <div class="columns large-10 small-9" data-ng-bind="phase.endTime.epoch * 1000 | date:'EEEE MM/dd/yy | h:mm a'"></div>
+                  <div class="columns large-10 small-9" data-ng-bind="phase.endTime.epoch * 1000 | date:'EEE MMM d | h:mm a'"></div>
                 </li>
               </ul>
             </div>
@@ -153,7 +153,7 @@
           </div>
         </div>
       </div>
-      <div class="cc-widget cc-widget-interesting cc-widget-last">
+      <div data-ng-show="selected_semester.time_bucket !== 'future'" class="cc-widget cc-widget-interesting cc-widget-last">
         <div class="cc-widget-title">
           <h2>GPA Calculator</h2>
         </div>

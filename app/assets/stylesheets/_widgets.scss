@@ -51,7 +51,7 @@
 .cc-widget-list-selected {
   background: $cc-color-widget-more-background;
 }
-.cc-widget-list > li > a, .cc-widget-list .cc-widget-list-link, .cc-widget-list-hover {
+.cc-widget-list > li > a, .cc-widget-list .cc-widget-list-link, .cc-widget-list-hover, .cc-widget-table-hover {
   overflow: hidden;
   position: relative;
   padding: 10px 15px;
@@ -60,9 +60,6 @@
     cursor: pointer;
     outline: 0;
     text-decoration: none;
-    i {
-      color: $cc-color-popover-icon-hover;
-    }
   }
 }
 .cc-widget-list > li > a, .cc-widget-list .cc-widget-list-link {
@@ -160,6 +157,34 @@
     background: $cc-color-dark-blue;
     h2 {
       color: $cc-color-white;
+    }
+  }
+}
+
+.cc-widget-table-hover td:not(.cc-widget-table-hover-notriangle) {
+  &:hover, &:focus {
+    &:after {
+      border-bottom: 4px solid transparent;
+      border-right: 4px solid #474747;
+      border-top: 4px solid transparent;
+      content: "";
+      margin-top: 5px;
+      position: absolute;
+      right: 50px;
+    }
+  }
+}
+
+.cc-widget-table-hover-opened td:not(.cc-widget-table-hover-notriangle) {
+  &:hover, &:focus {
+    &:after {
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid #474747;
+      content: "";
+      margin-top: 7px;
+      position: absolute;
+      right: 50px;
     }
   }
 }
