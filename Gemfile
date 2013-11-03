@@ -97,12 +97,16 @@ group :assets do
   gem "uglifier", "~> 2.2.1"
 
   # Font awesome - an icon font
-  # https://github.com/littlebtc/font-awesome-sass-rails
-  gem "font-awesome-sass-rails", :git => 'https://github.com/pduersteler/font-awesome-sass-rails.git', :ref => '50375dfa'
+  # https://github.com/bokmann/font-awesome-rails
+  gem "font-awesome-rails", "~> 4.0.0.0"
 
   # Moment.js
   # https://github.com/derekprior/momentjs-rails
   gem "momentjs-rails", "~> 2.2.1"
+
+  # Placeholder.js
+  # https://github.com/ets-berkeley-edu/placeholder-gem
+  gem "placeholder-gem", "~> 3.0.0.0"
 
   # Raven.js - library for JS error logging
   gem "ravenjs-gem", "~> 1.0.7.0"

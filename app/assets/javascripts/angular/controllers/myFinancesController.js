@@ -121,7 +121,8 @@
         if (addedTerms.indexOf(item.transTerm) === -1) {
           addedTerms.push(item.transTerm);
 
-          if (item.transTerm === 'Payment' || item.transTerm === 'Payments') {
+          if (item.transTermCd === 'Payments') {
+            item.transTerm = 'Payments';
             // A payment doesn't have a year associate to it so we add a bogus one
             item.transTermYr = 9999;
           }
@@ -131,6 +132,10 @@
             'label': item.transTerm,
             'value': item.transTerm
           });
+        }
+
+        if (item.transTermCd === 'Payments') {
+          item.transTerm = 'Payments';
         }
       }
       terms.push({
@@ -229,7 +234,7 @@
      */
     $scope.getSortClass = function(column) {
       var sortUpDown = $scope.sort.descending ? 'down' : 'up';
-      return column == $scope.sort.column && 'icon-chevron-' + sortUpDown;
+      return column == $scope.sort.column && 'fa fa-chevron-' + sortUpDown;
     };
 
     /**
