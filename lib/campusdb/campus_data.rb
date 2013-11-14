@@ -30,13 +30,13 @@ class CampusData < OracleDatabase
         pi.person_name, pi.email_address, pi.affiliations,
         reg.reg_status_cd, reg.educ_level, reg.admin_cancel_flag, reg.acad_blk_flag, reg.admin_blk_flag,
         reg.fin_blk_flag, reg.reg_blk_flag, reg.tot_enroll_unit, reg.cal_residency_flag
-      from bspace_person_info_vw pi
-      left outer join bspace_student_term_vw reg on
+      from calcentral_person_info_vw pi
+      left outer join calcentral_student_term_vw reg on
         ( reg.ldap_uid = pi.ldap_uid
-          and reg.term_yr = #{connection.quote(current_year)}
+          and reg.term_yr = #{current_year.to_i}
           and reg.term_cd = #{connection.quote(current_term)}
         )
-      where pi.ldap_uid = #{connection.quote(person_id)}
+      where pi.ldap_uid = #{person_id.to_i}
       SQL
       result = connection.select_one(sql)
     }
@@ -66,8 +66,8 @@ class CampusData < OracleDatabase
     use_pooled_connection {
       sql = <<-SQL
       select pi.ldap_uid, pi.first_name, pi.last_name, pi.email_address, pi.student_id, pi.affiliations
-      from bspace_person_info_vw pi
-      where pi.ldap_uid in (#{up_to_1000_ldap_uids.join(', ')})
+      from calcentral_person_info_vw pi
+      where pi.ldap_uid in (#{up_to_1000_ldap_uids.collect{|id| id.to_i}.join(', ')})
       SQL
       result = connection.select_all(sql)
     }
@@ -79,13 +79,13 @@ class CampusData < OracleDatabase
       use_pooled_connection {
       sql = <<-SQL
       select pi.ldap_uid, pi.student_id, reg.reg_status_cd
-      from bspace_person_info_vw pi
-      left outer join bspace_student_term_vw reg on
+      from calcentral_person_info_vw pi
+      left outer join calcentral_student_term_vw reg on
         ( reg.ldap_uid = pi.ldap_uid
-          and reg.term_yr = #{connection.quote(current_year)}
+          and reg.term_yr = #{current_year.to_i}
           and reg.term_cd = #{connection.quote(current_term)}
         )
-      where pi.ldap_uid = #{connection.quote(person_id)}
+      where pi.ldap_uid = #{person_id.to_i}
       SQL
       result = connection.select_one(sql)
     }
@@ -102,10 +102,10 @@ class CampusData < OracleDatabase
       sql = <<-SQL
       select roster.student_ldap_uid ldap_uid, roster.enroll_status,
         person.first_name, person.last_name, person.email_address, person.student_id, person.affiliations
-      from bspace_class_roster_vw roster, bspace_person_info_vw person
-      where roster.term_yr = #{connection.quote(term_yr)}
+      from calcentral_class_roster_vw roster, calcentral_person_info_vw person
+      where roster.term_yr = #{term_yr.to_i}
         and roster.term_cd = #{connection.quote(term_cd)}
-        and roster.course_cntl_num = #{connection.quote(ccn)}
+        and roster.course_cntl_num = #{ccn.to_i}
         and roster.student_ldap_uid = person.ldap_uid
         and roster.enroll_status != 'D'
       SQL
@@ -119,10 +119,10 @@ class CampusData < OracleDatabase
     use_pooled_connection {
       sql = <<-SQL
       select course_title, dept_name, catalog_id, term_yr, term_cd
-      from bspace_course_info_vw
-      where term_yr = #{connection.quote(term_yr)}
+      from calcentral_course_info_vw
+      where term_yr = #{term_yr.to_i}
         and term_cd = #{connection.quote(term_cd)}
-        and course_cntl_num = #{connection.quote(ccn)}
+        and course_cntl_num = #{ccn.to_i}
       SQL
       result = connection.select_one(sql)
     }
@@ -134,10 +134,10 @@ class CampusData < OracleDatabase
     use_pooled_connection {
       sql = <<-SQL
       select distinct course_title, dept_name, catalog_id, term_yr, term_cd
-      from bspace_course_info_vw
-      where term_yr = #{connection.quote(term_yr)}
+      from calcentral_course_info_vw
+      where term_yr = #{term_yr.to_i}
         and term_cd = #{connection.quote(term_cd)}
-        and course_cntl_num in (#{ccns.collect{|id| connection.quote(id)}.join(', ')})
+        and course_cntl_num in (#{ccns.collect{|id| id.to_i}.join(', ')})
       SQL
       result = connection.select_all(sql)
     }
@@ -149,8 +149,8 @@ class CampusData < OracleDatabase
     use_pooled_connection {
       sql = <<-SQL
       select term_yr, term_cd, course_cntl_num, dept_name, catalog_id, primary_secondary_cd, section_num, instruction_format
-      from bspace_course_info_vw
-      where term_yr = #{connection.quote(term_yr)}
+      from calcentral_course_info_vw
+      where term_yr = #{term_yr.to_i}
         and term_cd = #{connection.quote(term_cd)}
         and dept_name = #{connection.quote(dept_name)}
         and catalog_id = #{connection.quote(catalog_id)}
@@ -170,12 +170,13 @@ class CampusData < OracleDatabase
       select c.term_yr, c.term_cd, c.course_cntl_num, r.enroll_status, r.wait_list_seq_num, r.unit, r.pnp_flag,
         c.course_title, c.dept_name, c.catalog_id, c.primary_secondary_cd, c.section_num, c.instruction_format,
         c.catalog_root, c.catalog_prefix, c.catalog_suffix_1, c.catalog_suffix_2, c.enroll_limit, c.cred_cd
-      from bspace_class_roster_vw r
-      join bspace_course_info_vw c on (
+      from calcentral_class_roster_vw r
+      join calcentral_course_info_vw c on (
         c.term_yr = r.term_yr
           and c.term_cd = r.term_cd
           and c.course_cntl_num = r.course_cntl_num )
-      where r.student_ldap_uid = #{connection.quote(person_id)}
+      where r.student_ldap_uid = #{person_id.to_i}
+        and c.section_cancel_flag is null
         #{terms_clause}
       order by c.term_yr desc, c.term_cd desc, c.dept_name,
         c.catalog_root, c.catalog_prefix nulls first, c.catalog_suffix_1 nulls first, c.catalog_suffix_2 nulls first,
@@ -194,7 +195,7 @@ class CampusData < OracleDatabase
       select t.term_yr, t.term_cd, trim(t.dept_cd) as dept_name, trim(t.course_num) as catalog_id,
         trim(t.grade) as grade, t.unit as transcript_unit
       from calcentral_transcript_vw t where
-        t.student_ldap_uid = #{connection.quote(person_id)}
+        t.student_ldap_uid = #{person_id.to_i}
           and t.unit != 0
           #{terms_clause}
       order by t.term_yr desc, t.term_cd desc, dept_name, catalog_id
@@ -212,9 +213,10 @@ class CampusData < OracleDatabase
       select c.term_yr, c.term_cd, c.course_cntl_num,
         c.course_title, c.dept_name, c.catalog_id, c.primary_secondary_cd, c.section_num, c.instruction_format,
         c.catalog_root, c.catalog_prefix, c.catalog_suffix_1, c.catalog_suffix_2
-      from bspace_course_instructor_vw i
-      join bspace_course_info_vw c on c.term_yr = i.term_yr and c.term_cd = i.term_cd and c.course_cntl_num = i.course_cntl_num
-      where i.instructor_ldap_uid = #{connection.quote(person_id)}
+      from calcentral_course_instr_vw i
+      join calcentral_course_info_vw c on c.term_yr = i.term_yr and c.term_cd = i.term_cd and c.course_cntl_num = i.course_cntl_num
+      where i.instructor_ldap_uid = #{person_id.to_i}
+        and c.section_cancel_flag is null
         #{terms_clause}
       order by c.term_yr desc, c.term_cd desc, c.dept_name,
         c.catalog_root, c.catalog_prefix nulls first, c.catalog_suffix_1 nulls first, c.catalog_suffix_2 nulls first,
@@ -231,10 +233,10 @@ class CampusData < OracleDatabase
       sql = <<-SQL
         select sched.BUILDING_NAME, sched.ROOM_NUMBER, sched.MEETING_DAYS, sched.MEETING_START_TIME,
         sched.MEETING_START_TIME_AMPM_FLAG, sched.MEETING_END_TIME, sched.MEETING_END_TIME_AMPM_FLAG
-        from BSPACE_CLASS_SCHEDULE_VW sched
-        where sched.TERM_YR = #{connection.quote(term_yr)}
+        from CALCENTRAL_CLASS_SCHEDULE_VW sched
+        where sched.TERM_YR = #{term_yr.to_i}
           and sched.TERM_CD = #{connection.quote(term_cd)}
-          and sched.COURSE_CNTL_NUM = #{connection.quote(ccn)}
+          and sched.COURSE_CNTL_NUM = #{ccn.to_i}
           and (sched.PRINT_CD is null or sched.PRINT_CD <> 'C')
           and (sched.MULTI_ENTRY_CD is null or sched.MULTI_ENTRY_CD <> 'C')
       SQL
@@ -249,12 +251,12 @@ class CampusData < OracleDatabase
       sql = <<-SQL
         select p.person_name, p.ldap_uid, bci.instructor_func,
           p.first_name, p.last_name, p.email_address, p.student_id, p.affiliations
-        from bspace_course_instructor_vw bci
-        join bspace_person_info_vw p on p.ldap_uid = bci.instructor_ldap_uid
+        from calcentral_course_instr_vw bci
+        join calcentral_person_info_vw p on p.ldap_uid = bci.instructor_ldap_uid
         where bci.instructor_ldap_uid = p.ldap_uid
-          and bci.term_yr = #{connection.quote(term_yr)}
+          and bci.term_yr = #{term_yr.to_i}
           and bci.term_cd = #{connection.quote(term_cd)}
-          and bci.course_cntl_num = #{connection.quote(ccn)}
+          and bci.course_cntl_num = #{ccn.to_i}
         order by bci.instructor_func
       SQL
       result = connection.select_all(sql)
@@ -267,8 +269,8 @@ class CampusData < OracleDatabase
     use_pooled_connection {
       sql = <<-SQL
         select ph.bytes, ph.photo
-        from bspace_student_photo_vw ph
-        where ph.student_ldap_uid=#{connection.quote(ldap_uid)}
+        from calcentral_student_photo_vw ph
+        where ph.student_ldap_uid=#{ldap_uid.to_i}
       SQL
       result = connection.select_one(sql)
     }
@@ -282,23 +284,21 @@ class CampusData < OracleDatabase
         select s.cum_gpa, s.tot_units, s.first_reg_term_cd, s.first_reg_term_yr,
           s.ug_grad_flag, s.affiliations
         from calcentral_student_info_vw s
-        where s.student_ldap_uid=#{connection.quote(ldap_uid)}
+        where s.student_ldap_uid=#{ldap_uid.to_i}
       SQL
       result = connection.select_one(sql)
     }
     result
   end
 
-
-
   def self.is_previous_ugrad?(ldap_uid)
     result = {}
     use_pooled_connection {
-      # A somewhat expensive query. Use with caution.
       sql = <<-SQL
         select ts.student_ldap_uid from calcentral_transcript_vw ts
         where ts.line_type = 'U'
-          and ts.student_ldap_uid = #{connection.quote(ldap_uid)}
+          and ts.student_ldap_uid = #{ldap_uid.to_i}
+          and rownum < 2
       SQL
       result = connection.select_one(sql)
     }
@@ -329,8 +329,8 @@ class CampusData < OracleDatabase
     use_pooled_connection {
       sql = <<-SQL
         select count(r.term_yr) as course_count
-        from bspace_course_instructor_vw r
-        where r.instructor_ldap_uid = #{connection.quote(ldap_uid)}
+        from calcentral_course_instr_vw r
+        where r.instructor_ldap_uid = #{ldap_uid.to_i}
           and rownum < 2
           #{instructor_terms_clause}
       SQL
@@ -346,8 +346,8 @@ class CampusData < OracleDatabase
     use_pooled_connection {
       sql = <<-SQL
         select count(r.term_yr) as course_count
-        from bspace_class_roster_vw r
-        where r.student_ldap_uid = #{connection.quote(ldap_uid)}
+        from calcentral_class_roster_vw r
+        where r.student_ldap_uid = #{ldap_uid.to_i}
           and rownum < 2
           #{student_terms_clause}
       SQL
@@ -355,20 +355,6 @@ class CampusData < OracleDatabase
     }
     Rails.logger.debug "Student #{ldap_uid} history for terms #{student_terms} count = #{result}"
     return result["course_count"].to_i > 0
-  end
-
-  def self.terms_query_clause(table, terms)
-    if !terms.blank?
-      clause = 'and ('
-      terms.each_index do |idx|
-        clause.concat(' or ') if idx > 0
-        clause.concat("(#{table}.term_cd=#{connection.quote(terms[idx].term_cd)} and #{table}.term_yr=#{connection.quote(terms[idx].term_yr)})")
-      end
-      clause.concat(')')
-      clause
-    else
-      ''
-    end
   end
 
 end

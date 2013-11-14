@@ -18,6 +18,12 @@
       $scope,
       apiService) {
 
+    var sortTermsIndex = {
+      'Fall': 0,
+      'Summer': 1,
+      'Spring': 2
+    };
+
     var parseDate = function(obj, i) {
       var regex = /^(\d{4})[\-](0?[1-9]|1[012])[\-](0?[1-9]|[12][0-9]|3[01])$/;
       var item = obj[i] + '';
@@ -44,12 +50,30 @@
         if (obj.transStatus === 'Past due') {
           obj._isPastDueDate = true;
           obj._isDueNow = '1_past_due'; // Past due
-        } else if (obj.transStatus !== 'Closed') {
+        } else if (obj.transStatus === 'Current' || obj.transStatus === 'Installment') {
           obj._isDueNow = '2_current_due'; // Current due
         }
       }
       if (!obj._isDueNow) {
-        obj._isDueNow = 0; // Closed
+        obj._isDueNow = '3_closed'; // Closed
+      }
+    };
+
+    /**
+     * We need to parse the amount to a fixed float
+     * The reason for doing this is search, so you can find 25.00 (instead of 25)
+     */
+    var parseAmount = function(obj, i) {
+      var item = obj[i];
+      if (angular.isNumber(item)) {
+        obj[i] = item.toFixed(2);
+      }
+    };
+
+    var parseTransStatus = function(element, summary) {
+      if (element && element.transStatus && element.transStatus === 'Installment') {
+        element._isDPP = true;
+        summary._hasDPPTransactions = true;
       }
     };
 
@@ -58,15 +82,18 @@
       for (var i in finances.summary) {
         if (finances.summary.hasOwnProperty(i)){
           parseDate(finances.summary, i);
+          parseAmount(finances.summary, i);
         }
       }
 
       finances.activity.forEach(function(element) {
         parseTransBalanceAmount(element);
+        parseTransStatus(element, finances.summary);
         for (var j in element) {
           if (element.hasOwnProperty(j)){
 
             parseDate(element, j);
+            parseAmount(element, j);
             if (j === 'transDueDate') {
               parseDueDate(element, j);
             }
@@ -85,9 +112,12 @@
         return b.transTermYr - a.transTermYr;
       }
 
-      if (a.transTermCd > b.transTermCd) {
+      var a_search = sortTermsIndex[a.transTermCd];
+      var b_search = sortTermsIndex[b.transTermCd];
+
+      if (a_search > b_search) {
         return 1;
-      } else if (a.transTermCd < b.transTermCd) {
+      } else if (a_search < b_search) {
         return -1;
       }
     };
@@ -110,6 +140,7 @@
       $scope.search = {
         'transTerm': to_select_term
       };
+      $scope.search_term = to_select_term;
     };
 
     var createTerms = function() {
@@ -191,12 +222,12 @@
      */
     var checkAllZero = function() {
       var summary = $scope.myfinances.summary;
-      $scope.isAllZero = (summary.anticipatedAid === 0 &&
-        summary.lastStatementBalance === 0 &&
-        summary.unbilledActivity === 0 &&
-        summary.futureActivity === 0 &&
-        summary.totalPastDueAmount === 0 &&
-        summary.minimumAmountDue === 0);
+      $scope.isAllZero = (summary.anticipatedAid === '0.00' &&
+        summary.lastStatementBalance === '0.00' &&
+        summary.unbilledActivity === '0.00' &&
+        summary.futureActivity === '0.00' &&
+        summary.totalPastDueAmount === '0.00' &&
+        summary.minimumAmountDue === '0.00');
     };
 
     /**
@@ -260,12 +291,6 @@
         $scope.searchStatuses = statuses.minimumamountdue;
       } else {
         $scope.searchStatuses = statuses.all;
-      }
-    });
-
-    $scope.$watch('search.transTerm', function(transTerm) {
-      if (transTerm) {
-        $scope.search_term = transTerm;
       }
     });
 

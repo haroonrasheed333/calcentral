@@ -78,8 +78,7 @@ describe "MyClasses" do
   end
 
   it "should return some classes for only instructors", :if => CampusData.test_data? do
-    #Match this with some instructor from populate_campus_h2, like this awful Cog Sci/Bio teacher
-    my_classes = MyClasses.new('192517').get_feed
+    my_classes = MyClasses.new('238382').get_feed
     results = my_classes[:classes].select {|entry| entry[:role] == "Instructor" }
     (results.size >= 2).should be_true
     results.each do |my_class|
@@ -92,7 +91,7 @@ describe "MyClasses" do
     SakaiUserSitesProxy.stub(:access_granted?).and_return(false)
     CampusUserCoursesProxy.any_instance.stub(:get_campus_courses).and_return(false)
     my_classes = MyClasses.new(@user_id).get_feed
-    my_classes.length.should == 2
+    my_classes.length.should == 3
   end
 
 end

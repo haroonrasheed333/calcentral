@@ -518,8 +518,8 @@
               "section_number": "003",
               "instructors": [
                 {
-                  "name": "Yu-Hung Lin",
-                  "uid": "192517"
+                  "name": "Bernadette Geuy",
+                  "uid": "238382"
                 },
                 {
                   "name": "Chris Tweney",
@@ -574,8 +574,8 @@
               "section_number": "001",
               "instructors": [
                 {
-                  "name": "Yu-Hung Lin",
-                  "uid": "192517"
+                  "name": "Bernadette Geuy",
+                  "uid": "238382"
                 }
               ],
               "schedules": [
@@ -617,8 +617,8 @@
               "schedules": [],
               "instructors": [
                 {
-                  "name": "Yu-Hung Lin",
-                  "uid": "192517"
+                  "name": "Bernadette Geuy",
+                  "uid": "238382"
                 }
               ],
               "is_primary_section": true
@@ -643,8 +643,8 @@
               "schedules": [],
               "instructors": [
                 {
-                  "name": "Yu-Hung Lin",
-                  "uid": "192517"
+                  "name": "Bernadette Geuy",
+                  "uid": "238382"
                 }
               ]
             }
@@ -888,5 +888,13 @@
       }
     ],
     "url": "http://registrar.berkeley.edu/tbfaqs.html"
+  },
+  "last_modified": {
+    "hash": "af8f7132a5d2efdf8bd3d88c2d1fa5d37086c389",
+    "timestamp": {
+      "epoch": 1383947240,
+      "date_time": "2013-11-08T13:47:20-08:00",
+      "date_string": "11/08"
+    }
   }
 }
