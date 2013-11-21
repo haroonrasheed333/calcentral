@@ -2,6 +2,7 @@ logger:
   level: <%= ENV['LOGGER_LEVEL'] || WARN %>
   stdout: <%= ENV['LOGGER_STDOUT'] %>
   slow_query_threshold_in_ms: 250
+  slow_request_threshold_in_ms: 60000
 
 application:
   # Set to true if testing production env without Apache/Nginx
@@ -64,12 +65,12 @@ canvas_proxy:
   # Used to import campus users and enrollments
   current_terms_codes: [
     {
-      term_yr: "2013",
-      term_cd: "D"
-    },
-    {
       term_yr: "2014",
       term_cd: "B"
+    },
+    {
+      term_yr: "2013",
+      term_cd: "D"
     }
   ]
   mixed_sis_user_id: true
@@ -176,6 +177,7 @@ cache:
     CanvasLti: <%= 5.minutes %>
     CanvasCourseStudentsProxy: <%= 15.minutes %>
     CanvasCourseTeachersProxy: <%= 5.minutes %>
+    CanvasCourseProvisioningJobs: <%= 24.hours %>
     MyRegBlocks: 0
 
     CanvasUserSites: <%= 15.minutes %>
