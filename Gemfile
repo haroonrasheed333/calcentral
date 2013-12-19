@@ -1,5 +1,4 @@
 source "https://rubygems.org"
-source 'http://torquebox.org/rubygems'
 
 # The core framework
 # https://github.com/rails/rails
@@ -71,9 +70,9 @@ gem "devise", "~> 2.2.5"
 gem "bootstrap-sass", "2.3.2.0"
 
 # TorqueBox app server
-gem "torquebox", "~> 2.3.2"
-gem "torquebox-server", "~> 2.3.2"
-gem "torquebox-messaging", "~> 2.3.2"
+gem "torquebox", "~> 3.0.1"
+gem "torquebox-server", "~> 3.0.1"
+gem "torquebox-messaging", "~> 3.0.1"
 
 # for trying, and trying again, and then giving up.
 gem "retriable", "~> 1.3.3.1"
@@ -93,7 +92,7 @@ group :assets do
   gem "sass-rails", "~> 3.2.6"
   gem "coffee-rails", "~> 3.2.2"
   gem "compass-rails", "~> 1.0.3"
-  gem "zurb-foundation", "4.3.2"
+  gem "foundation-rails", "~> 5.0.2.0"
 
   # Ruby wrapper for UglifyJS JavaScript compressor
   # https://github.com/lautis/uglifier
