@@ -94,9 +94,9 @@ group :assets do
   gem "compass-rails", "~> 1.0.3"
   gem "foundation-rails", "~> 5.0.2.0"
 
-  # Ruby wrapper for UglifyJS JavaScript compressor
-  # https://github.com/lautis/uglifier
-  gem "uglifier", "~> 2.2.1"
+  # Closure Compiler Gem for JS compression
+  # https://github.com/documentcloud/closure-compiler
+  gem "closure-compiler", "~> 1.1.10"
 
   # Font awesome - an icon font
   # https://github.com/bokmann/font-awesome-rails
@@ -113,6 +113,10 @@ group :assets do
   # Raven.js - library for JS error logging
   gem "ravenjs-gem", "~> 1.0.7.0"
 
+  # ngmin-rails
+  # https://github.com/jasonm/ngmin-rails
+  gem "ngmin-rails", "~> 0.4.0"
+
 end
 
 # Oracle adapter
@@ -128,18 +132,8 @@ group :development, :test , :testext do
   gem "rspec-mocks", "~> 2.13.1"
   gem "minitest-reporters", "~> 0.14.20"
 
-  # Test our JavaScript code.
-  # https://github.com/pivotal/jasmine-gem
-  gem "jasmine", "~> 1.3.1"
-
-  # Don't update the following gem without doing a precompile
-  gem "jquery-rails", "~> 2.2.1"
-  gem "jasmine-jquery-rails", "~> 1.4.2"
-
   # We need to specify the latest webdriver here, to support the latest firefox
-  gem "selenium-webdriver", "~> 2.32.1"
-
-  gem "therubyrhino", "~> 2.0.1"
+  gem "selenium-webdriver", "~> 2.39.0"
 
   # Code coverage for Ruby 1.9 with a powerful configuration library and automatic merging of coverage across test suites
   # https://rubygems.org/gems/simplecov
@@ -187,5 +181,9 @@ group :test, :testext do
 end
 
 group :development, :assets do
-  gem "turbo-sprockets-rails3", "~> 0.3.10"
+  gem "turbo-sprockets-rails3", "~> 0.3.11"
+end
+
+group :shell_debug do
+  gem 'ruby-debug', '>= 0.10.5.rc9'
 end

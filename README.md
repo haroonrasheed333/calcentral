@@ -70,10 +70,16 @@ cd calcentral
 # Answer "yes" again if it asks you to trust a new .rvmrc file.
 ```
 
-1. Make JRuby faster, give it lots of RAM, & enable C extensions by running this or put in your .bashrc:
-```bash
-export JRUBY_OPTS="-Xcext.enabled=true -J-d32 -J-client -X-C -J-Xms900m -J-Xmx900m -J-XX:MaxPermSize=500m"
+1. (For 64-bit JVMs) Make JRuby faster, give it lots of RAM, & enable C extensions by running this or put in your .bashrc:
+``` bash
+export JRUBY_OPTS="-Xcext.enabled=true -X-C -J-Xms900m -J-Xmx900m -J-XX:MaxPermSize=500m --headless -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-Xcompile.invokedynamic=false"
 ```
+
+1. (For 32-bit JVMs) Make JRuby faster, give it lots of RAM, & enable C extensions by running this or put in your .bashrc:
+```bash
+export JRUBY_OPTS="-Xcext.enabled=true -J-d32 -J-client -X-C -J-Xms900m -J-Xmx900m -J-XX:MaxPermSize=500m --headless"
+```
+
   * __WARNING__: The -J-d32 setting is optional (32-bit mode starts up a tiny bit quicker in some JVMs).
   * __WARNING__: Do not switch between 32-bit and 64-bit JRuby after your gemset has been initialized (your bundle library will have serious issues). If you do need to change settings, make sure to reinitialize your gemset:
      * ```rvm gemset delete calcentral```
@@ -152,14 +158,16 @@ rspec --drb spec/lib/my_spec.rb
 
 You can even run Spork right inside [IntelliJ RubyMine or IDEA](http://www.jetbrains.com/ruby/webhelp/using-drb-server.html).
 
-## Front-end Testing
+## Front-end Linting
 
-Front-end [jasmine](http://pivotal.github.com/jasmine/) tests live in spec/javascripts/calcentral/*.
+Front-end linting can be done by running the following command:
 
-To run the tests headless on firefox run `rake jasmine:ci`.
+```
+jshint .
+```
 
-To view results of front-end tests, run `rake jasmine` in a separate terminal,
-then visit [localhost:8888](http://localhost:8888).
+This will check for any potential JavaScript issues and whether you formatted the code correctly.
+
 
 ## Role-Aware Testing
 
