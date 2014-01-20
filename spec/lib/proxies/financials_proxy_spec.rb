@@ -27,12 +27,14 @@ describe FinancialsProxy do
 
   context "tammi is missing financials" do
     subject { fake_tammi_financials }
-    it { should be_nil }
+    its([:body]) { should eq("My Finances did not receive any CARS data for your account. If you are a current or recent student, and you feel that you've received this message in error, please try again later. If you continue to see this error, please use the feedback link below to tell us about the problem.") }
+    its([:status_code]) { should eq(404) }
   end
 
   context "non-student should not get any financials" do
     subject { non_student_financials }
-    it { should be_nil }
+    its([:body]) { should eq("CalCentral's My Finances tab is only available for current or recent UC Berkeley students. If you are seeing this message, it is because CalCentral did not receive any CARS data for your account. If you believe that you have received this message in error, please use the Feedback link below to tell us about the problem.")}
+    its([:status_code]) { should eq(400) }
   end
 
   context "fake oski financials" do
@@ -46,7 +48,7 @@ describe FinancialsProxy do
     after(:each) { WebMock.reset! }
     subject { live_oski_financials }
 
-    its([:body]) { should eq("Remote server unreachable") }
+    its([:body]) { should eq("My Finances is currently unavailable. Please try again later.") }
     its([:status_code]) { should eq(503) }
   end
 
@@ -55,6 +57,7 @@ describe FinancialsProxy do
     after(:each) { WebMock.reset! }
 
     subject { live_oski_financials }
-    it { should be_nil }
+    its([:body]) { should eq("My Finances is currently unavailable. Please try again later.") }
+    its([:status_code]) { should eq(403) }
   end
 end

@@ -7,18 +7,10 @@ class MyTextbooks < MyMergedModel
     @slug = options[:slug]
   end
 
-  def get_feed(*opts)
-    self.class.fetch_from_cache "#{@ccn}-#{@slug}" do
-      init
-      feed = get_feed_internal(*opts)
-      notify_if_feed_changed(feed, @ccn)
-      feed
-    end
-  end
-
   def get_feed_as_json(*opts)
     self.class.fetch_from_cache "json-#{@ccn}-#{@slug}" do
-      feed = get_feed(*opts)
+      init
+      feed = get_feed_internal(*opts)
       feed.to_json
     end
   end
@@ -28,7 +20,7 @@ class MyTextbooks < MyMergedModel
     if Settings.features.textbooks
       proxy = TextbooksProxy.new({user_id: @uid, ccns: @ccns, slug: @slug})
       proxy_response = proxy.get
-      feed = proxy_response[:body]
+      feed = proxy_response
     end
     feed
   end

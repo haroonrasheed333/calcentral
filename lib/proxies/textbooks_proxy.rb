@@ -14,15 +14,16 @@ class TextbooksProxy < BaseProxy
       book_list = ul.xpath('./li')
 
       book_list.each do |bl|
-        isbn = bl.xpath('.//span[@id="materialISBN"]').text.split(":")[1].strip
+        isbn = bl.xpath('.//span[@id="materialISBN"]')[0].text.split(":")[1].strip
 
         book_detail = {
-          :title => bl.xpath('.//h3[@class="material-group-title"]').text.split("\n")[0],
-          :image => bl.xpath('.//span[@id="materialTitleImage"]/img/@src').text,
+          :has_choices => bl.xpath('.//h3[@class="material-group-title choice-title"]').length > 0 || bl.xpath('.//div[@class="choice-list-heading-sub"]').length > 0,
+          :title => bl.xpath('.//h3[@class="material-group-title"]')[0].text.split("\n")[0],
+          :image => bl.xpath('.//span[@id="materialTitleImage"]/img/@src')[0].text,
           :isbn => isbn,
-          :author => bl.xpath('.//span[@id="materialAuthor"]').text.split(":")[1],
-          :edition => bl.xpath('.//span[@id="materialEdition"]').text.split(":")[1],
-          :publisher => bl.xpath('.//span[@id="materialPublisher"]').text.split(":")[1],
+          :author => bl.xpath('.//span[@id="materialAuthor"]')[0].text.split(":")[1],
+          :edition => bl.xpath('.//span[@id="materialEdition"]')[0].text.split(":")[1],
+          :publisher => bl.xpath('.//span[@id="materialPublisher"]')[0].text.split(":")[1],
           :amazon_link => amazon_url + isbn,
           :chegg_link => chegg_url + isbn,
           :oskicat_link => oskicat_url + isbn
@@ -31,6 +32,10 @@ class TextbooksProxy < BaseProxy
       end
     end
     books
+  end
+
+  def has_choices(category_books)
+    category_books.any? {|i| i[:has_choices] == true}
   end
 
   def get_term(slug)
@@ -67,6 +72,7 @@ class TextbooksProxy < BaseProxy
       recommended_books = []
       optional_books = []
       status_code = ''
+      url = ''
       begin
         @ccns.each do |ccn|
           path = "/webapp/wcs/stores/servlet/booklookServlet?bookstore_id-1=554&term_id-1=#{@term}&crn-1=#{ccn}"
@@ -74,16 +80,18 @@ class TextbooksProxy < BaseProxy
           logger.info "Fake = #@fake; Making request to #{url} on behalf of user #{@uid}; cache expiration #{self.class.expires_in}"
           response = FakeableProxy.wrap_request(APP_ID + "_" + vcr_cassette, @fake, {match_requests_on: [:method, :path]}) {
             HTTParty.get(
-              url            )
+              url,
+              timeout: Settings.application.outgoing_http_timeout
+            )
           }
           status_code = response.code
           text_books = Nokogiri::HTML(response.body)
           logger.debug "Remote server status #{response.code}; url = #{url}"
-          text_books = text_books.xpath('//h2 | //ul')
+          text_books_items = text_books.xpath('//h2 | //ul')
 
-          required_text_list = text_books.xpath('//h2[contains(text(), "Required")]/following::ul[1]')
-          recommended_text_list = text_books.xpath('//h2[contains(text(), "Recommended")]/following::ul[1]')
-          optional_text_list = text_books.xpath('//h2[contains(text(), "Optional")]/following::ul[1]')
+          required_text_list = text_books_items.xpath('//h2[contains(text(), "Required")]/following::ul[1]')
+          recommended_text_list = text_books_items.xpath('//h2[contains(text(), "Recommended")]/following::ul[1]')
+          optional_text_list = text_books_items.xpath('//h2[contains(text(), "Optional")]/following::ul[1]')
           required_books.push(ul_to_dict(required_text_list))
           recommended_books.push(ul_to_dict(recommended_text_list))
           optional_books.push(ul_to_dict(optional_text_list))
@@ -91,24 +99,25 @@ class TextbooksProxy < BaseProxy
 
         book_response = {
           :required_books => {:type => "Required",
-                              :books => required_books.flatten},
+                              :books => required_books.flatten,
+                              :has_choices => has_choices(required_books.flatten)},
           :recommended_books => {:type => "Recommended",
-                              :books => recommended_books.flatten},
+                              :books => recommended_books.flatten,
+                              :has_choices => has_choices(recommended_books.flatten)},
           :optional_books => {:type => "Optional",
-                              :books => optional_books.flatten},
+                              :books => optional_books.flatten,
+                              :has_choices => has_choices(optional_books.flatten)},
         }
 
         book_response[:has_books] = !(required_books.flatten.blank? && recommended_books.flatten.blank? && optional_books.flatten.blank?)
         {
-          body: {
-            books: book_response
-          },
+          books: book_response,
           status_code: status_code
         }
-      rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
+      rescue SocketError, Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
         logger.error "Connection to url #{url} failed: #{e.class} #{e.message}"
         {
-          body: "Remote server unreachable",
+          body: "Currently, we can't reach the bookstore. Check again later for updates, or contact your instructor directly.",
           status_code: 503
         }
       end

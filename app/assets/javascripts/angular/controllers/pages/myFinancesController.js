@@ -18,7 +18,10 @@
       var item = obj[i] + '';
       var match = item.match(regex);
       if (match && match[0]) {
-        obj[i] = new Date(match[1], parseInt(match[2], 10) - 1, match[3]);
+        var date = new Date(match[1], parseInt(match[2], 10) - 1, match[3]);
+        obj[i] = date;
+        // Let's make sure angular can search through this property
+        obj[i + '_search'] = $filter('date')(date, 'MM/dd/yy');
       }
     };
 
@@ -231,8 +234,15 @@
           createCounts();
         }
 
-        apiService.util.setTitle('My Finances');
+        if (data.status_code && data.status_code >= 400) {
+          $scope.myfinances_error = data;
+        }
+
+      }).error(function(data) {
+        angular.extend($scope, data);
       });
+
+      apiService.util.setTitle('My Finances');
     };
 
     //http://jsfiddle.net/vojtajina/js64b/14/

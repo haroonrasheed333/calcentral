@@ -14,6 +14,8 @@ application:
   # Neither VCR nor WebMock are thread-safe, and so fake proxy support should
   # be disabled when no fakes are needed (e.g., in production).
   fake_proxies_enabled: true
+  # timeout (in seconds) for outgoing http request establishment
+  outgoing_http_timeout: 30
 
 cas_server: 'localhost:1234/cas'
 cas_logout_url: 'https://localhost:4321/cas/logout'
@@ -142,7 +144,7 @@ financials_proxy:
 
 textbooks_proxy:
   fake: false
-  base_url: "https://www.bkstr.com"
+  base_url: "http://www.bkstr.com"
 
 playlists_proxy:
   fake: false
@@ -183,7 +185,7 @@ cache:
     FeedUpdateWhiteboard: <%= 5.minutes %>
     LiveUpdatesWarmer: <%= 2.minutes %>
     MyAcademics::Merged: 0
-    MyActivities: 0
+    MyActivities::Merged: 0
     MyBadges::Merged: 0
     MyCampusLinksController: 0
     MyClasses: 0
@@ -216,6 +218,8 @@ cache:
 
     CalLinkMembershipsProxy: <%= 4.hours %>
     CalLinkOrganizationProxy: <%= 4.hours %>
+
+    MyTextbooks: <%= 24.hours %>
 
 # Cache warmer settings
 cache_warmer:

@@ -147,9 +147,15 @@
         <div data-cc-spinner-directive>
           <div class="cc-widget-padding">
             <div data-ng-if="books.has_books">
+              <div class="cc-textbooks-bookstore">
+                Buy all the books for this class at <a href="http://www.bkstr.com/Home/10001-10433-1">Cal Student Store</a>.
+              </div>
               <div data-ng-repeat="books_category in books" class="cc-clearfix-container">
                 <h3 data-ng-if="books_category.books" data-ng-bind="books_category.type"></h3>
-                <div data-ng-if="books_category.books">
+                <p data-ng-if="books_category.has_choices">
+                  This section has a choice of titles. Please visit the <a href="http://www.bkstr.com/Home/10001-10433-1">Cal Student Store</a> to see them all.
+                </p>
+                <div data-ng-if="books_category.books && !books_category.has_choices">
                   <div data-ng-repeat="book in books_category.books" class="cc-textbooks-list">
                     <div class="small-4 columns rows" data-ng-if="book.image">
                       <img class="cc-textbooks-image" data-ng-attr-alt="Textbook cover for {{book.title}}" data-ng-src="{{book.image}}" width="110" height="160"></img>
@@ -181,8 +187,10 @@
                 </div>
               </div>
             </div>
-            <div data-ng-if="books.has_books === false">
-              There are no books available.
+            <div class="cc-error-message" data-ng-if="books.has_books === false">
+              Currently, there is no textbook information for this course. Check again later for updates, or contact your instructor directly.
+            </div>
+            <div class="cc-error-message" data-ng-if="textbook_error.body" data-ng-bind="textbook_error.body">
             </div>
           </div>
         </div>
