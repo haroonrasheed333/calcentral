@@ -154,7 +154,9 @@ youtube_proxy:
   fake: false
   base_url: 'https://gdata.youtube.com/feeds/api/playlists/'
   params: {
-    alt: 'json'
+    alt: 'json',
+    orderby: 'reversedPosition',
+    max-results: '50' # This is the max youtube allows
   }
 
 blog_latest_release_notes_feed_proxy:
@@ -188,9 +190,9 @@ cache:
     MyActivities::Merged: 0
     MyBadges::Merged: 0
     MyCampusLinksController: 0
-    MyClasses: 0
+    MyClasses::Merged: 0
     MyFinancials: 0
-    MyGroups: 0
+    MyGroups::Merged: 0
     MyTasks::Merged: 0
     MyUpNext: 0
     MyRefreshController: <%= 30.seconds %>
@@ -202,14 +204,14 @@ cache:
     CanvasCourseProvisioningJobs: <%= 24.hours %>
     MyRegBlocks: 0
 
-    CanvasUserSites: <%= 15.minutes %>
+    CanvasMergedUserSites: <%= 15.minutes %>
     CanvasUserCoursesProxy: <%= 30.minutes %>
     CanvasGroupsProxy: <%= 30.minutes %>
     CanvasUserActivityStreamProxy: <%= 10.minutes %>
     CanvasTodoProxy: <%= 20.minutes %>
     CanvasUpcomingEventsProxy: <%= 20.minutes %>
 
-    SakaiUserSitesProxy: <%= 30.minutes %>
+    SakaiMergedUserSites: <%= 30.minutes %>
     SakaiSiteAnnouncementsProxy: <%= 30.minutes %>
 
     MyBadges::GoogleCalendar: <%= 4.minutes %>

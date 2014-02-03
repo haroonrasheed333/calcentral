@@ -242,23 +242,6 @@ class CampusData < OracleDatabase
     result
   end
 
-  def self.get_sections_from_course(dept_name, catalog_id, term_yr, term_cd)
-    result = []
-    use_pooled_connection {
-      sql = <<-SQL
-      select term_yr, term_cd, course_cntl_num, dept_name, catalog_id, primary_secondary_cd, section_num, instruction_format
-      from calcentral_course_info_vw
-      where term_yr = #{term_yr.to_i}
-        and term_cd = #{connection.quote(term_cd)}
-        and dept_name = #{connection.quote(dept_name)}
-        and catalog_id = #{connection.quote(catalog_id)}
-        and section_cancel_flag is null
-      SQL
-      result = connection.select_all(sql)
-    }
-    result
-  end
-
   # Catalog ID sorting is: "99", "101L", "C103", "C107L", "110", "110L", "C112", "C112L"
   def self.get_enrolled_sections(person_id, terms = nil)
     result = []
@@ -310,11 +293,13 @@ class CampusData < OracleDatabase
     terms_clause = terms_query_clause('i', terms)
     use_pooled_connection {
       sql = <<-SQL
-      select c.term_yr, c.term_cd, c.course_cntl_num,
+      select d.dept_description, c.term_yr, c.term_cd, c.course_cntl_num,
         c.course_title, c.dept_name, c.catalog_id, c.primary_secondary_cd, c.section_num, c.instruction_format,
         c.catalog_root, c.catalog_prefix, c.catalog_suffix_1, c.catalog_suffix_2
       from calcentral_course_instr_vw i
       join calcentral_course_info_vw c on c.term_yr = i.term_yr and c.term_cd = i.term_cd and c.course_cntl_num = i.course_cntl_num
+      join calcentral_dept_vw d on (
+        d.dept_name = c.dept_name)
       where i.instructor_ldap_uid = #{person_id.to_i}
         and c.section_cancel_flag is null
         #{terms_clause}

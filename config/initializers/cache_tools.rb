@@ -8,7 +8,6 @@ module Calcentral
     USER_CACHE_WARMER = UserCacheWarmer.new
 
     USER_CACHE_EXPIRATION = UserCacheInvalidator.new
-    MERGED_FEEDS_EXPIRATION = UserCacheInvalidator.new
 
     {
       MyFinancials => :expire,
@@ -24,7 +23,7 @@ module Calcentral
       CanvasUpcomingEventsProxy => :expire,
       CanvasUserActivityStreamProxy => :expire,
       CanvasUserProfileProxy => :expire,
-      CanvasUserSites => :expire,
+      CanvasMergedUserSites => :expire,
 
       MyBadges::GoogleCalendar => :expire,
       MyBadges::GoogleDrive => :expire,
@@ -32,16 +31,16 @@ module Calcentral
       MyTasks::GoogleTasks => :expire,
 
       SakaiProxy => :expire,
-      SakaiUserSitesProxy => :expire
+      SakaiMergedUserSites => :expire
     }.each do |key, value|
       USER_CACHE_EXPIRATION.add_observer(key, value)
     end
 
     merged_feeds_array = [
       UserApi,
-      MyClasses,
+      MyClasses::Merged,
       MyFinancials,
-      MyGroups,
+      MyGroups::Merged,
       MyActivities::Merged,
       MyTasks::Merged,
       MyBadges::Merged,
@@ -51,7 +50,6 @@ module Calcentral
     MERGED_FEEDS = {}
     merged_feeds_array.each do |feed|
       USER_CACHE_EXPIRATION.add_observer(feed, :expire)
-      MERGED_FEEDS_EXPIRATION.add_observer(feed, :expire)
       MERGED_FEEDS[feed.name] = feed
     end
 
