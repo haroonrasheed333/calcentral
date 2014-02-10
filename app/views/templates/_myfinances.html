@@ -76,7 +76,7 @@
                 class="cc-widget-list-hover cc-page-myfinances-account-summary-item"
                 data-ng-class="{'cc-widget-list-hover-opened':(myfinances.show)}"
                 data-cc-accessible-focus-directive
-                data-ng-click="api.widget.toggleShow($event, null, myfinances, 'My Finances - Summary', false)">
+                data-ng-click="api.widget.toggleShow($event, null, myfinances, 'My Finances - Summary')">
 
                 <div class="small-8 columns">Account Balance
                   <div class="cc-page-myfinances-account-summary-subtitle cc-page-myfinances-light">includes charges not yet due</div>
@@ -99,7 +99,7 @@
               </div>
             </li>
             <li data-ng-if="myfinances.summary.accountBalance !== '0.00'">
-              <div class="cc-page-myfinances-account-summary-buttons">
+              <div class="cc-page-myfinances-account-summary-buttons cc-print-hide">
                 <a class="cc-button cc-button-blue" href="http://studentbilling.berkeley.edu/carsPaymentOptions.htm">Make Payment</a>
               </div>
             </li>
@@ -116,7 +116,7 @@
           </ul>
         </div>
 
-        <div class="cc-widget">
+        <div class="cc-widget cc-print-hide">
           <div class="cc-widget-title">
             <h2 class="cc-left">Financial Resources</h2>
           </div>
@@ -153,8 +153,9 @@
         <div class="cc-widget cc-page-myfinances-account-activity cc-widget-last">
           <div class="cc-widget-title">
             <h2 class="cc-left">Activity</h2>
-            <div class="cc-right cc-page-myfinances-account-activity-search">
-              <input type="text" placeholder="Search..." data-ng-model="search.$">
+            <div class="cc-right cc-print-clear cc-print-left cc-page-myfinances-account-activity-search" data-ng-class="{'cc-print-hide':(!search.$)}">
+              <div class="cc-hidden cc-page-myfinances-print-label cc-print-show cc-left">Search:</div>
+              <input type="text" placeholder="Search..." data-ng-model="search.$" />
             </div>
           </div>
 
@@ -173,7 +174,8 @@
                 </ul>
               </div>
               <div class="small-5 columns">
-                <div class="cc-select cc-right" data-ng-show="transStatusSearch==''">
+                <div class="cc-hidden cc-print-show cc-page-myfinances-print-label cc-print-left">Term: </div>
+                <div class="cc-select cc-right cc-print-left" data-ng-show="transStatusSearch==''">
                   <select data-ng-model="search.transTerm" id="cc-page-myfinances-select-term" data-ng-options="t.value as t.label for t in myfinances.terms" data-ng-change="search_term = search.transTerm">
                   </select>
                 </div>
@@ -208,7 +210,7 @@
                 class="cc-widget-table-hover"
                 data-cc-accessible-focus-directive
                 data-ng-class="{'cc-widget-table-hover-opened cc-widget-list-selected':(item.show)}"
-                data-ng-click="api.widget.toggleShow($event, myfinances.activity, item, 'My Finances - Transaction', false)"
+                data-ng-click="api.widget.toggleShow($event, myfinances.activity, item, 'My Finances - Transaction')"
                  data-ng-repeat="item in myfinances.activity | filter:search | filter:statusFilter | orderBy:sort.column:sort.descending">
                 <tr data-ng-class="{'cc-page-myfinances-red':(item.isPastDueDate === true), 'cc-page-myfinances-green':(item.transBalanceAmountFloat < 0), 'cc-page-myfinances-unapplied': (item.transStatus === 'Unapplied' && item.transType === 'Award')}">
                   <td class="cc-widget-table-hover-notriangle">
@@ -248,6 +250,10 @@
                       <div data-ng-if="item.transDueDateShow && !(item.transStatus === 'Closed' && item.transType === 'Refund')">
                         <strong>Due Date:</strong>
                         <span data-ng-bind="item.transDueDateShow"></span>
+                      </div>
+                      <div data-ng-if="item.transPotentialDisbursementDate">
+                        <strong>Potential Disbursement Date:</strong>
+                        <span data-ng-bind="item.transPotentialDisbursementDate"></span>
                       </div>
                       <div data-ng-if="item.transDept">
                         <strong>Department:</strong>

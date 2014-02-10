@@ -73,7 +73,8 @@ class TextbooksProxy < BaseProxy
       optional_books = []
       status_code = ''
       url = ''
-      begin
+      book_unavailable_error = ''
+      safe_request("Currently, we can't reach the bookstore. Check again later for updates, or contact your instructor directly.") do
         @ccns.each do |ccn|
           path = "/webapp/wcs/stores/servlet/booklookServlet?bookstore_id-1=554&term_id-1=#{@term}&crn-1=#{ccn}"
           url = "#{Settings.textbooks_proxy.base_url}#{path}"
@@ -86,12 +87,7 @@ class TextbooksProxy < BaseProxy
           }
 
           if response.code >= 400
-            logger.error "Connection failed: #{response.code} #{response.body}; url = #{url}"
-            body = "Currently, we can't reach the bookstore. Check again later for updates, or contact your instructor directly."
-            return {
-              body: body,
-              status_code: response.code
-            }
+            raise Calcentral::ProxyError.new("Currently, we can't reach the bookstore. Check again later for updates, or contact your instructor directly.")
           end
 
           status_code = response.code
@@ -105,6 +101,10 @@ class TextbooksProxy < BaseProxy
           required_books.push(ul_to_dict(required_text_list))
           recommended_books.push(ul_to_dict(recommended_text_list))
           optional_books.push(ul_to_dict(optional_text_list))
+          bookstore_error_section = text_books.xpath('//div[@id="efCourseErrorSection"]/h2')
+          if bookstore_error_section.length > 0
+            book_unavailable_error = bookstore_error_section[0].text.gsub('*', '').strip
+          end
         end
 
         book_response = {
@@ -135,16 +135,11 @@ class TextbooksProxy < BaseProxy
           })
         end
 
+        book_response[:book_unavailable_error] = book_unavailable_error
         book_response[:has_books] = !(required_books.flatten.blank? && recommended_books.flatten.blank? && optional_books.flatten.blank?)
         {
           books: book_response,
           status_code: status_code
-        }
-      rescue SocketError, Timeout::Error, EOFError, Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
-        logger.error "Connection to url #{url} failed: #{e.class} #{e.message}"
-        {
-          body: "Currently, we can't reach the bookstore. Check again later for updates, or contact your instructor directly.",
-          status_code: 503
         }
       end
     end
