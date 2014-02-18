@@ -54,13 +54,8 @@ class SessionsController < ApplicationController
   end
 
   def new
-    # Any parameters appended here to the OmniAuth provider will be
-    # returned as parameters to the OmniAuth callback endpoint when
-    # authentication completes.
-    # The smart_path parameter is used for unauthenticated users to
-    # reach a non-public route after a successful CAS login.
-    # redirect_to "/auth/cas?smart_path=#{params[:smart_path]}"
-    redirect_to "/auth/cas"
+    # redirect_to "/auth/cas?url=#{params[:url]}"
+    redirect_to '/auth/cas'
   end
 
   def failure
@@ -71,10 +66,9 @@ class SessionsController < ApplicationController
 
   private
 
-  # use the smart_path value we pass to omniauth if returned
   def smart_success_path
-    #(params[:smart_path].present?) ? params[:smart_path] : '/dashboard'
-    '/dashboard'
+    # the :url parameter is returned by the CAS auth server
+    (params[:url].present?) ? params[:url] : '/dashboard'
   end
 
   def continue_login_success(uid)
