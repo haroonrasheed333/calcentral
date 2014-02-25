@@ -274,7 +274,8 @@
 
             <div class="cc-table cc-academics-semester cc-academics-semester-{{semester.time_bucket}}" data-ng-repeat="semester in semesters">
               <div>
-                <h3><a data-ng-href="/academics/semester/{{semester.slug}}" data-ng-bind="semester.name"></a></h3>
+                <h3><a class="cc-left" data-ng-href="/academics/semester/{{semester.slug}}" data-ng-bind="semester.name"></a></h3>
+                <a class="cc-right" data-ng-href="/academics/booklist" data-ng-show="semester.time_bucket === 'current'">Book List</a>
                 <table data-ng-show="semester.classes">
                   <thead>
                     <tr>
@@ -310,7 +311,7 @@
                       <tr data-ng-repeat="phase in telebears.phases">
                         <td data-ng-bind="phase.period" class="cc-telebears-phase-center"></td>
                         <td data-ng-bind="phase.startTime.epoch * 1000 | date:'EEE MMM d'" class="cc-telebears-date-padding"></td>
-                        <td data-ng-bind="phase.startTime.epoch * 1000 | date:'h:mm a'"></td>
+                        <td data-ng-bind="phase.startTime.epoch * 1000 | cc.dateUnlessNoon:'h:mm a'"></td>
                       </tr>
                     </tbody>
                   </table>

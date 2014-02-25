@@ -1,7 +1,7 @@
 require 'signet/oauth_2/client'
 
 class CanvasProxy < BaseProxy
-  include ClassLogger, SafeJsonParser
+  include ClassLogger
   extend Proxies::EnableForActAs
 
   attr_accessor :client
@@ -56,7 +56,7 @@ class CanvasProxy < BaseProxy
           return nil
         end
         raise Calcentral::ProxyError.new(
-                "Connection failed for URL '#{fetch_options[:uri]}', UID #{@uid}: #{response.status} #{response.body}")
+                "Connection failed for URL '#{fetch_options[:uri]}', UID #{@uid}: #{response.status} #{response.body}", nil, nil)
       else
         response
       end
