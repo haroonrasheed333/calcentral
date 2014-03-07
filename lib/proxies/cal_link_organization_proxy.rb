@@ -12,7 +12,7 @@ class CalLinkOrganizationProxy < CalLinkProxy
   end
 
   def get_organization
-    self.class.smart_fetch_from_cache(@org_id, "Remote server unreachable") do
+    self.class.smart_fetch_from_cache({id: @org_id, user_message_on_exception: "Remote server unreachable"}) do
       request_internal
     end
   end
@@ -32,7 +32,7 @@ class CalLinkOrganizationProxy < CalLinkProxy
       ).get
     }
     if response.status >= 400
-      raise Calcentral::ProxyError.new("Connection failed: #{response.code} #{response.body}; url = #{url}")
+      raise Calcentral::ProxyError.new("Connection failed: #{response.status} #{response.body}; url = #{url}")
     end
     Rails.logger.debug "#{self.class.name}: Remote server status #{response.status}, Body = #{response.body}"
     {

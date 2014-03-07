@@ -15,15 +15,15 @@
         <a class="radius cc-button cc-button-large" href="https://ets.berkeley.edu/calcentral">Learn More<span class="cc-visuallyhidden"> about the CalCentral releases</span></a>
       </div>
 
-      <div class="row collapse cc-page-splash-blog-panel" data-ng-if="latest_release_note.title">
+      <div class="row collapse cc-page-splash-blog-panel" data-ng-if="latestReleaseNote.title">
         <div class="medium-2 columns hide-for-small cc-page-splash-blog-date">
-          <p>{{latest_release_note.date}}</p>
+          <p>{{latestReleaseNote.date}}</p>
         </div>
         <div class="medium-10 columns small-12">
           <p class="cc-page-splash-blog-title">
-            <a data-ng-href="{{latest_release_note.link}}">{{latest_release_note.title}}</a>
+            <a data-ng-href="{{latestReleaseNote.link}}">{{latestReleaseNote.title}}</a>
           </p>
-          <p class="cc-page-splash-blog-summary" data-ng-bind-html="latest_release_note.snippet"></p>
+          <p class="cc-page-splash-blog-summary" data-ng-bind-html="latestReleaseNote.snippet"></p>
         </div>
       </div>
     </div>
@@ -34,21 +34,21 @@
           <div class="row cc-page-splash-info cc-page-splash-center">
             <%= image_tag "splash_waitlist_625×415.png", :size => "625×415", :alt => "", :class => "cc-page-splash-info-image" %>
             <p class="cc-page-splash-info-text">
-              <strong>Enrollments and Wait List</strong>: The Classes card in My Academics provides a student with a list of their current enrollments, including wait list status.
+              <strong>Enrollments and Wait List</strong>: The Classes card in My Academics provides students with a list of their current enrollments, including wait list status.
             </p>
           </div>
 
           <div class="row cc-page-splash-info cc-page-splash-center">
             <%= image_tag "splash_telebears_625×415.png", :size => "625×415", :alt => "", :class => "cc-page-splash-info-image" %>
             <p class="cc-page-splash-info-text">
-              <strong>Tele-BEARS and GPA Calculator</strong>: The Appointments card in My Academics shows a student their Tele-BEARS appointments, as well as wheather or not they need a Tele-BEARS code from their advisor beforehand. The GPA Calculator is pre-configured with a students classes, units and grade option, making it easy to calculate possible GPA for the semester.
+              <strong>Tele-BEARS and GPA Calculator</strong>: The Appointments card in My Academics shows students their Tele-BEARS appointments, as well as whether or not they need an advisor code beforehand. The GPA Calculator is pre-configured with a student's classes and units, making it easy to calculate a possible GPA for the semester.
             </p>
           </div>
 
           <div class="row cc-page-splash-info cc-page-splash-center">
             <%= image_tag "splash_bconnected_625×415.png", :size => "625×415", :alt => "", :class => "cc-page-splash-info-image" %>
             <p class="cc-page-splash-info-text">
-              <strong>bConnected and Academic Status</strong>: bConnected apps are easy to access from any page on CalCentral. Badges on the icons show unread bMail messages, and new invitations to bCal events. Academic Status (person icon) shows important registration and other status.
+              <strong>bConnected and Academic Status</strong>: bConnected apps are easy to access from any page on CalCentral. Badges on the icons show unread bMail messages and new invitations to bCal events. Academic Status (person icon) shows important registration and other status.
             </p>
           </div>
 

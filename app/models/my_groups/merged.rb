@@ -1,11 +1,12 @@
-class MyGroups::Merged  < MyMergedModel
+class MyGroups::Merged  < UserSpecificModel
 
   def get_feed_internal
     groups = []
     [
       MyGroups::Callink,
       MyGroups::Canvas,
-      MyGroups::Sakai
+      MyGroups::Sakai,
+      MyGroups::Research
     ].each do |provider|
       groups.concat(provider.new(@uid).fetch)
     end
