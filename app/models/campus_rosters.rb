@@ -13,6 +13,7 @@ class CampusRosters
     @class_slug = options[:class_slug]
     @semester_slug = options[:semester_slug]
     @ccns = options[:ccns]
+    @primary_ccn = options[:primary_ccn]
     @cache_key = "#{@class_slug}-#{@semester_slug}"
   end
 
@@ -66,7 +67,7 @@ class CampusRosters
               last_name: enr['last_name'],
               enroll_status: enr['enroll_status'],
               section_ccns: [ccn],
-              primary_ccn: ccn
+              primary_ccn: @primary_ccn || ccn
           }
         end
       end
@@ -111,7 +112,7 @@ class CampusRosters
 
   def user_authorized?
     term = get_term(@semester_slug)
-    teachers_list = CampusData.get_section_instructors(term[:term_yr], term[:term_cd], @ccns[0])
+    teachers_list = CampusData.get_section_instructors(term[:term_yr], term[:term_cd], @primary_ccn)
     match = teachers_list.index {|teacher| teacher['ldap_uid'] == @uid}
     if match.nil?
       logger.warn("Unauthorized request from user = #{@uid} for Canvas course #{@canvas_course_id}")

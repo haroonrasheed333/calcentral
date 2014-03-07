@@ -274,17 +274,21 @@
               $scope.selected_course = course;
               if (is_instructor_gsi) {
                 var ccns = [];
+                var primary_ccn;
 
-                for (var i = 0; i < course.sections.length; i++) {
-                  ccns[i] = course.sections[i].ccn;
+                for (var j = 0; j < course.sections.length; j++) {
+                  ccns[j] = course.sections[j].ccn;
+                  if (course.sections[j].is_primary_section) {
+                    primary_ccn = course.sections[j].ccn;
+                  }
                 }
                 var courseInfo = {
                   'ccns[]': ccns,
                   'semester_slug': class_semester.slug,
-                  'class_slug': course.slug
+                  'class_slug': course.slug,
+                  'primary_ccn': primary_ccn
                 };
                 $scope.course_info = courseInfo;
-                $scope.$broadcast('CampusCourseInfo', courseInfo);
               }
               break;
             }

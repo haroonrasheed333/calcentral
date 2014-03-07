@@ -36,4 +36,27 @@ describe CanvasRostersController do
     json_response["students"].should_not be_nil
   end
 
+  it "should return error for campus rosters if user is not authorized" do
+    user_id = rand(99999)
+    session[:user_id] = user_id
+    ccns = []
+    ccns[0] = rand(99999).to_s
+    ccns[1] = rand(99999).to_s
+
+    params = {
+      "ccns" => ccns,
+      "semester_slug" => "spring-2014",
+      "class_slug" => "mec_eng-132",
+      "primary_ccn" => rand(99999).to_s
+    }
+
+    CampusRosters.any_instance.stub(:get_feed).and_return(nil)
+    get :get_feed, params: params
+    assert_response(401)
+    student_id = rand(99999)
+    params[:person_id] = student_id
+    get :photo, params
+    assert_response(401)
+  end
+
 end
