@@ -284,7 +284,7 @@
                   'class_slug': course.slug
                 };
                 $scope.course_info = courseInfo;
-                $scope.$broadcast('CampusCourseInfo', $scope.course_info);
+                $scope.$broadcast('CampusCourseInfo', courseInfo);
               }
               break;
             }
