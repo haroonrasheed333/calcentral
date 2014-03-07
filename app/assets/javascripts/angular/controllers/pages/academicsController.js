@@ -272,6 +272,20 @@
             var course = class_semester.classes[i];
             if (course.slug === $routeParams.classSlug) {
               $scope.selected_course = course;
+              if (is_instructor_gsi) {
+                var ccns = [];
+
+                for (var i = 0; i < course.sections.length; i++) {
+                  ccns[i] = course.sections[i].ccn;
+                }
+                var courseInfo = {
+                  'ccns[]': ccns,
+                  'semester_slug': class_semester.slug,
+                  'class_slug': course.slug
+                };
+                $scope.course_info = courseInfo;
+                $scope.$broadcast('CampusCourseInfo', $scope.course_info);
+              }
               break;
             }
           }
@@ -289,6 +303,13 @@
 
       $scope.telebears = data.telebears;
 
+    };
+
+    $scope.current_selection = 'Class Info';
+    $scope.select_options = ['Class Info', 'Class Roster'];
+
+    $scope.switchSelectedOption = function(selected_option) {
+      $scope.current_selection = selected_option;
     };
 
     $scope.addTelebearsAppointment = function(phasesArray) {

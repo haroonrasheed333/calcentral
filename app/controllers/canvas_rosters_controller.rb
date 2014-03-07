@@ -3,7 +3,7 @@ class CanvasRostersController < ApplicationController
 
   # GET /api/academics/rosters/canvas/:canvas_course_id
   def get_feed
-    if (model = valid_model(params[:canvas_course_id]))
+    if (model = valid_model(params[:canvas_course_id]) || model = campus_model(params))
       if (feed = model.get_feed)
         render :json => feed.to_json
       else
@@ -16,9 +16,9 @@ class CanvasRostersController < ApplicationController
 
   # GET /canvas/:canvas_course_id/photo/:person_id
   def photo
-    if (model = valid_model(params[:canvas_course_id]))
-      canvas_user_id = Integer(params[:person_id], 10)
-      photo = model.photo_data_or_file(canvas_user_id)
+    if (model = valid_model(params[:canvas_course_id]) || model = campus_model(params))
+      user_id_access = Integer(params[:person_id], 10)
+      photo = model.photo_data_or_file(user_id_access)
       if (photo.nil?)
         render :nothing => true, :status => 401
       elsif (data = photo[:data])
@@ -55,6 +55,10 @@ class CanvasRostersController < ApplicationController
       canvas_course_id = Integer(canvas_course_id, 10)
       CanvasRosters.new(user_id, canvas_course_id: canvas_course_id)
     end
+  end
+
+  def campus_model(params)
+    CampusRosters.new(session[:user_id], class_slug: params[:class_slug], semester_slug: params[:semester_slug], ccns: params[:ccns])
   end
 
 end
