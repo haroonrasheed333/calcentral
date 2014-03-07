@@ -25,16 +25,17 @@
     };
 
     var getRoster = function() {
-      var canvasCourseId = $routeParams.canvas_course_id || 'embedded';
-      $http.get('/api/academics/rosters/canvas/' + canvasCourseId).success(function(data) {
-        angular.extend($scope, data);
-        window.setInterval(postHeight, 250);
-      }).error(function(data, status) {
-        angular.extend($scope, data);
-        $scope.error_status = status;
-      });
+      // var canvasCourseId = $routeParams.canvas_course_id || 'embedded';
+      // $http.get('/api/academics/rosters/canvas/' + canvasCourseId).success(function(data) {
+      //   angular.extend($scope, data);
+      //   window.setInterval(postHeight, 250);
+      // }).error(function(data, status) {
+      //   angular.extend($scope, data);
+      //   $scope.error_status = status;
+      // });
 
       $scope.$on('CampusCourseInfo', function(event, course_info) {
+        console.log(course_info);
         $scope.course_info = course_info;
         $http.get('/api/academics/rosters/campus/', {params: $scope.course_info}).success(function(data) {
           angular.extend($scope, data);

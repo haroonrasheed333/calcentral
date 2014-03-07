@@ -4,6 +4,7 @@ class CanvasRostersController < ApplicationController
   # GET /api/academics/rosters/canvas/:canvas_course_id
   def get_feed
     if (model = valid_model(params[:canvas_course_id]) || model = campus_model(params))
+      puts "testing"
       if (feed = model.get_feed)
         render :json => feed.to_json
       else

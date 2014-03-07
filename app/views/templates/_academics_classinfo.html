@@ -10,7 +10,7 @@
         <a href="/academics">My Academics</a> &raquo;
         <a data-ng-href="/academics/semester/{{selected_semester.slug}}"><span data-ng-bind="selected_semester.name"></span></a> &raquo;
         <span data-ng-bind="selected_course.course_number"></span>
-        <span class="cc-academics-teaching-button-group">
+        <span class="cc-academics-teaching-button-group" data-ng-if="is_instructor_gsi">
           <ul class="cc-button-group cc-even-{{select_options.length}}" role="tablist">
             <li data-ng-repeat="select_option in select_options">
               <button class="cc-button"
