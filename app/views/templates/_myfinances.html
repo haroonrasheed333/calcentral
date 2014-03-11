@@ -86,10 +86,10 @@
                 </div>
 
                 <div class="cc-page-myfinances-light" data-ng-if="myfinances.show">
-                  <div class="small-8 columns">
+                  <div class="small-8 columns cc-print-clear cc-print-width-auto">
                     Last Statement Balance <span class="cc-page-myfinances-lighter">({{myfinances.summary.lastStatementDate | date:'MM/dd/yy'}})</span>
                   </div>
-                  <div class="small-4 columns">
+                  <div class="small-4 columns cc-print-width-auto cc-print-right">
                     <div class="cc-page-myfinances-amount" data-cc-amount-directive="myfinances.summary.lastStatementBalance"></div>
                   </div>
                 </div>
@@ -144,7 +144,7 @@
         <div class="cc-widget cc-page-myfinances-account-activity cc-widget-last">
           <div class="cc-widget-title">
             <h2 class="cc-left">Activity</h2>
-            <button class="cc-button cc-right cc-page-myfinances-account-activity-print" onClick="window.print();">
+            <button class="cc-button cc-right cc-page-myfinances-account-activity-print" data-ng-click="printPage()">
               <i class="fa fa-print"></i> Print
             </button>
           </div>
