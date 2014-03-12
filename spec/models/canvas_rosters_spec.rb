@@ -83,7 +83,7 @@ describe "CanvasRosters" do
             }
         ]
     )
-    model = CanvasRosters.new(teacher_login_id, canvas_course_id: course_id)
+    model = CanvasRosters.new(teacher_login_id, course_id: course_id)
     feed = model.get_feed
     feed[:canvas_course][:id].should == course_id
     feed[:sections].length.should == 2
@@ -131,7 +131,7 @@ describe "CanvasRosters" do
             }
         ])
     )
-    model = CanvasRosters.new(teacher_login_id, canvas_course_id: course_id)
+    model = CanvasRosters.new(teacher_login_id, course_id: course_id)
     feed = model.get_feed
     feed[:canvas_course][:id].should == course_id
     feed[:sections].length.should == 1
@@ -156,9 +156,9 @@ describe "CanvasRosters" do
         ]
     )
     CanvasCourseTeachersProxy.stub(:new).with(course_id: student_site_id).and_return(student_proxy)
-    model = CanvasRosters.new(user_id, canvas_course_id: teaching_site_id)
+    model = CanvasRosters.new(user_id, course_id: teaching_site_id)
     model.user_authorized?.should be_true
-    model = CanvasRosters.new(user_id, canvas_course_id: student_site_id)
+    model = CanvasRosters.new(user_id, course_id: student_site_id)
     model.user_authorized?.should be_false
   end
 
@@ -249,7 +249,7 @@ describe "CanvasRosters" do
             }
         ]
     )
-    model = CanvasRosters.new(teacher_login_id, canvas_course_id: course_id)
+    model = CanvasRosters.new(teacher_login_id, course_id: course_id)
     feed = model.get_feed
     feed[:sections].length.should == 2
     feed[:students].length.should == 2
@@ -344,7 +344,7 @@ describe "CanvasRosters" do
             'photo' => photo_data
         }
     )
-    model = CanvasRosters.new(teacher_login_id, canvas_course_id: course_id)
+    model = CanvasRosters.new(teacher_login_id, course_id: course_id)
     enrolled_photo = model.photo_data_or_file(enrolled_student_canvas_id)
     enrolled_photo[:data].should == photo_data
     enrolled_photo[:size].should == 42
