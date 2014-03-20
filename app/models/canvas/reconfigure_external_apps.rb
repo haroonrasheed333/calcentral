@@ -5,7 +5,8 @@ module Canvas
 
     def app_to_xml
       {
-        'course_provision' => 'lti_course_provision',
+        'course_provision_account_navigation' => 'lti_course_provision_account_navigation',
+        'course_provision_user_navigation' => 'lti_course_provision_user_navigation',
         'rosters' => 'lti_roster_photos',
         'user_provision' => 'lti_user_provision',
         'course_add_user' => 'lti_course_add_user'
