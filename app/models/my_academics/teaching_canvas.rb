@@ -2,8 +2,8 @@ class MyAcademics::TeachingCanvas
   include MyAcademics::AcademicsModule
 
   def merge_sites(campus_courses)
-    return unless CanvasProxy.access_granted?(@uid)
-    if (canvas_sites = CanvasMergedUserSites.new(@uid).get_feed)
+    return unless Canvas::Proxy.access_granted?(@uid)
+    if (canvas_sites = Canvas::MergedUserSites.new(@uid).get_feed)
       included_course_sites = {}
       canvas_sites[:courses].each do |course_site|
         if (merged_courses = course_site_merge(campus_courses, course_site))
@@ -26,7 +26,7 @@ class MyAcademics::TeachingCanvas
   def course_site_merge(campus_terms, course_site)
     merged_courses = nil
     if (term_yr = course_site[:term_yr]) && (term_cd = course_site[:term_cd]) &&
-      (term_slug = TermCodes.to_slug(term_yr, term_cd)) && (site_sections = course_site[:sections])
+      (term_slug = Berkeley::TermCodes.to_slug(term_yr, term_cd)) && (site_sections = course_site[:sections])
       if (matching_term_idx = campus_terms.index {|t| t[:slug] == term_slug})
         # Compare CCNs as parsed integers to avoid mismatches on prefixed zeroes.
         site_ccns = site_sections.collect {|s| s[:ccn].to_i}

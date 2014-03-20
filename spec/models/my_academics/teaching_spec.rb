@@ -9,7 +9,7 @@ describe 'MyAcademics::Teaching' do
     Settings.sakai_proxy.stub(:current_terms_codes).and_return([OpenStruct.new(term_yr: "2013", term_cd: "D")])
   end
 
-  it "should get properly formatted data from fake Oracle MV", :if => SakaiData.test_data? do
+  it "should get properly formatted data from fake Oracle MV", :if => Sakai::SakaiData.test_data? do
 
     feed = {}
     MyAcademics::Teaching.new("238382").merge(feed)
@@ -22,7 +22,7 @@ describe 'MyAcademics::Teaching' do
     teaching[0][:term_yr].should == "2013"
 
     teaching[0][:classes].length.should == 2
-    bio1a = teaching[0][:classes].select {|course| course[:course_number] == 'BIOLOGY 1A'}[0]
+    bio1a = teaching[0][:classes].select {|course| course[:course_code] == 'BIOLOGY 1A'}[0]
     bio1a.empty?.should be_false
     bio1a[:dept].should eq "BIOLOGY"
     bio1a[:title].should == "General Biology Lecture"
@@ -32,7 +32,7 @@ describe 'MyAcademics::Teaching' do
     bio1a[:sections][1][:is_primary_section].should be_false
     bio1a[:sections][2][:is_primary_section].should be_false
 
-    cogsci = teaching[0][:classes].select {|course| course[:course_number] == 'COG SCI C147'}[0]
+    cogsci = teaching[0][:classes].select {|course| course[:course_code] == 'COG SCI C147'}[0]
     cogsci.empty?.should be_false
     cogsci[:dept].should == "COG SCI"
     cogsci[:title].should == "Language Disorders"
@@ -42,7 +42,7 @@ describe 'MyAcademics::Teaching' do
     teaching[1][:time_bucket].should == "past"
   end
 
-  it "should get correct time buckets for teaching semesters", :if => SakaiData.test_data? do
+  it "should get correct time buckets for teaching semesters", :if => Sakai::SakaiData.test_data? do
 
     feed = {}
     MyAcademics::Teaching.new("904715").merge(feed)

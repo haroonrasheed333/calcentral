@@ -1,5 +1,5 @@
 class BaseProxy
-  extend Calcentral::Cacheable
+  extend Cache::Cacheable
   include ClassLogger
 
   attr_accessor :fake, :settings
@@ -17,7 +17,7 @@ class BaseProxy
   end
 
   def lookup_student_id
-    student = CampusData.get_person_attributes @uid
+    student = CampusOracle::Queries.get_person_attributes @uid
     student.try(:[], "student_id")
   end
 

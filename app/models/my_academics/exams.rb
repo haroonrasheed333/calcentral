@@ -35,16 +35,16 @@ class MyAcademics::Exams
       location = {
         :raw_location => raw_location
       }
-      location_data = Buildings.get(raw_location)
+      location_data = Berkeley::Buildings.get(raw_location)
       unless location_data.nil?
         location = location.merge(location_data)
       end
-      course_number = "#{to_text(exam_data.css("deptName"))} #{to_text(exam_data.css("coursePrefixNum"))}#{to_text(exam_data.css("courseRootNum"))}"
+      course_code = "#{to_text(exam_data.css("deptName"))} #{to_text(exam_data.css("coursePrefixNum"))}#{to_text(exam_data.css("courseRootNum"))}"
       exams << {
         :date => format_date(exam_datetime, "%a %B %-d"),
         :time => time,
         :location => location,
-        :course_number => course_number
+        :course_code => course_code
       }
     end
     exams.sort! { |a, b| a[:date][:epoch] <=> b[:date][:epoch] }
@@ -57,7 +57,7 @@ class MyAcademics::Exams
     begin
       term_year = nodeset.attribute("termYear").value
       term_code = nodeset.attribute("termCode").value
-      return (CampusData.current_term == term_code && CampusData.current_year == term_year)
+      return (CampusOracle::Queries.current_term == term_code && CampusOracle::Queries.current_year == term_year)
     rescue NoMethodError, ArgumentError => e
       Rails.logger.warn "#{self.class.name}: Error parsing studentFinalExamSchedules #{nodeset} for termYear and termCode - #{e.message}"
       return false

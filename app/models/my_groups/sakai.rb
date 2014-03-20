@@ -3,8 +3,8 @@ class MyGroups::Sakai
 
   def fetch
     sites = []
-    return sites unless SakaiProxy.access_granted?(@uid)
-    sakai_sites = SakaiMergedUserSites.new(user_id: @uid).get_feed
+    return sites unless Sakai::Proxy.access_granted?(@uid)
+    sakai_sites = Sakai::SakaiMergedUserSites.new(user_id: @uid).get_feed
     sakai_sites[:groups].each do |group_site|
       sites << {
         emitter: group_site[:emitter],

@@ -73,11 +73,9 @@ class SessionsController < ApplicationController
     if (Integer(uid, 10) rescue nil).nil?
       Rails.logger.warn "FAILED login with CAS UID: #{uid}"
       redirect_to url_for_path('/uid_error')
-    elsif UserApi.is_allowed_to_log_in?(uid)
+    else
       session[:user_id] = uid
       redirect_to smart_success_path, :notice => "Signed in!"
-    else
-      redirect_to url_for_path('/sorry')
     end
   end
 
@@ -101,7 +99,7 @@ class SessionsController < ApplicationController
     # Also useful to enforce in the testing scenario due to the redirect to the settings page.
     never_logged_in_before = true
     use_pooled_connection {
-      never_logged_in_before = UserData.where(:uid => act_as_uid).first.blank?
+      never_logged_in_before = User::Data.where(:uid => act_as_uid).first.blank?
     }
     if never_logged_in_before && Settings.application.layer == "production"
       Rails.logger.warn "ACT-AS: User #{current_user.uid} FAILS to login to #{act_as_uid}, #{act_as_uid} hasn't logged in before."
@@ -114,7 +112,7 @@ class SessionsController < ApplicationController
       auth_user_id = current_user.uid
     end
 
-    policy = UserAuth.get(auth_user_id).policy
+    policy = User::Auth.get(auth_user_id).policy
     policy.can_act_as?
   end
 

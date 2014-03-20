@@ -65,11 +65,6 @@
       templateUrl: 'templates/tools_styles.html',
       controller: 'StylesController'
     }).
-    when('/sorry', {
-      templateUrl: 'templates/sorry.html',
-      controller: 'SorryController',
-      isPublic: true
-    }).
     when('/uid_error', {
       templateUrl: 'templates/uid_error.html',
       controller: 'uidErrorController',
@@ -77,7 +72,7 @@
     }).
     when('/canvas/embedded/rosters', {
       templateUrl: 'templates/canvas_embedded/roster.html',
-      controller: 'CanvasRosterController'
+      controller: 'RosterController'
     }).
     when('/canvas/embedded/course_provision', {
       templateUrl: 'templates/canvas_embedded/course_provision.html',
@@ -92,8 +87,7 @@
       controller: 'CanvasCourseAddUserController'
     }).
     when('/canvas/rosters/:canvas_course_id', {
-      templateUrl: 'templates/canvas_embedded/roster.html',
-      controller: 'CanvasRosterController'
+      templateUrl: 'templates/canvas_embedded/roster.html'
     }).
     when('/canvas/course_provision', {
       templateUrl: 'templates/canvas_embedded/course_provision.html',

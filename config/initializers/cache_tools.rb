@@ -5,47 +5,47 @@ module Calcentral
 
   Rails.application.config.after_initialize do
 
-    USER_CACHE_WARMER = UserCacheWarmer.new
+    USER_CACHE_WARMER = Cache::UserCacheWarmer.new
 
-    USER_CACHE_EXPIRATION = UserCacheInvalidator.new
+    USER_CACHE_EXPIRATION = Cache::UserCacheInvalidator.new
 
     {
-      MyFinancials => :expire,
-      MyRegBlocks => :expire,
+      Financials::MyFinancials => :expire,
+      Bearfacts::MyRegBlocks => :expire,
       CalLink::Memberships => :expire,
 
-      CampusUserCoursesProxy => :expire,
+      CampusOracle::UserCourses => :expire,
 
-      CanvasProxy => :expire,
-      CanvasUserCoursesProxy => :expire,
-      CanvasGroupsProxy => :expire,
-      CanvasTodoProxy => :expire,
-      CanvasUpcomingEventsProxy => :expire,
-      CanvasUserActivityStreamProxy => :expire,
-      CanvasUserProfileProxy => :expire,
-      CanvasMergedUserSites => :expire,
+      Canvas::Proxy => :expire,
+      Canvas::UserCourses => :expire,
+      Canvas::Groups => :expire,
+      Canvas::Todo => :expire,
+      Canvas::UpcomingEvents => :expire,
+      Canvas::UserActivityStream => :expire,
+      Canvas::UserProfile => :expire,
+      Canvas::MergedUserSites => :expire,
 
       MyBadges::GoogleCalendar => :expire,
       MyBadges::GoogleDrive => :expire,
       MyBadges::GoogleMail => :expire,
       MyTasks::GoogleTasks => :expire,
 
-      SakaiProxy => :expire,
-      SakaiMergedUserSites => :expire
+      Sakai::Proxy => :expire,
+      Sakai::SakaiMergedUserSites => :expire
     }.each do |key, value|
       USER_CACHE_EXPIRATION.add_observer(key, value)
     end
 
     merged_feeds_array = [
-      UserApi,
+      User::Api,
       MyClasses::Merged,
-      MyFinancials,
+      Financials::MyFinancials,
       MyGroups::Merged,
       MyActivities::Merged,
       MyTasks::Merged,
       MyBadges::Merged,
-      MyUpNext,
-      MyRegBlocks
+      UpNext::MyUpNext,
+      Bearfacts::MyRegBlocks
     ]
     MERGED_FEEDS = {}
     merged_feeds_array.each do |feed|

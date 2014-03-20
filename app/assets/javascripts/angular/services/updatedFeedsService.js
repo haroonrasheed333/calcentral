@@ -1,4 +1,4 @@
-(function(angular){
+(function(angular) {
 
   'use strict';
 
@@ -19,7 +19,7 @@
       'MyClasses::Merged',
       'MyGroups::Merged',
       'MyTasks::Merged',
-      'MyUpNext'
+      'UpNext::MyUpNext'
     ];
 
     /**

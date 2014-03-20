@@ -16,12 +16,12 @@ module MyTasks
 
     def init
       @enabled_sources ||= {
-        CanvasProxy::APP_NAME => {access_granted: CanvasProxy.access_granted?(@uid),
+        Canvas::Proxy::APP_NAME => {access_granted: Canvas::Proxy.access_granted?(@uid),
                                 source: MyTasks::CanvasTasks.new(@uid, @starting_date),
-                                pseudo_enabled: CanvasProxy.allow_pseudo_user?},
-        GoogleProxy::APP_ID => {access_granted: GoogleProxy.access_granted?(@uid),
+                                pseudo_enabled: Canvas::Proxy.allow_pseudo_user?},
+        Google::Proxy::APP_ID => {access_granted: Google::Proxy.access_granted?(@uid),
                                 source: MyTasks::GoogleTasks.new(@uid, @starting_date),
-                                pseudo_enabled: GoogleProxy.allow_pseudo_user?}
+                                pseudo_enabled: Google::Proxy.allow_pseudo_user?}
       }
       @enabled_sources.select!{|k,v| v[:access_granted] == true}
     end

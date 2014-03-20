@@ -1,11 +1,11 @@
 class MyCampusLinksController < ApplicationController
 
-  extend Calcentral::Cacheable
+  extend Cache::Cacheable
 
   def get_feed
     if session[:user_id]
       json = self.class.fetch_from_cache {
-        MyCampusLinks.new.get_feed.to_json
+        Links::MyCampusLinks.new.get_feed.to_json
       }
       render :json => json
     else

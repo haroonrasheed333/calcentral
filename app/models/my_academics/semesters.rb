@@ -14,7 +14,7 @@ class MyAcademics::Semesters
   end
 
   def merge(data)
-    proxy = CampusUserCoursesProxy.new({:user_id => @uid})
+    proxy = CampusOracle::UserCourses.new({:user_id => @uid})
     feed = proxy.get_all_campus_courses
     transcripts = proxy.get_all_transcripts
     semesters = []
@@ -28,7 +28,7 @@ class MyAcademics::Semesters
         # If we have a transcript unit, it needs to trump the unit.
         transcript = find_transcript_data(transcripts, term_yr, term_cd, course[:dept], course[:catid])
         units = transcript[:transcript_unit] ? transcript[:transcript_unit] : course[:unit]
-        grade_option = GradeOptions.grade_option_for_enrollment(course[:cred_cd], course[:pnp_flag])
+        grade_option = Berkeley::GradeOptions.grade_option_for_enrollment(course[:cred_cd], course[:pnp_flag])
 
         class_item = class_info(course).merge!({
           grade: transcript[:grade],
