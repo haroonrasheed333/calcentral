@@ -36,12 +36,13 @@ Calcentral::Application.routes.draw do
   ## Get a list of youtube videos given a playlist_id.
   match '/api/my/youtube/:playlist_id' => 'my_youtube#get_videos', :defaults => { :format => 'json' }
   ## Get a list of youtube videos given a playlist_title.
-  match '/api/my/videos/:playlist_title' => 'my_videos#get_videos', :constraints => { :playlist_title => /[^\/]+/ }, :defaults => { :format => 'json' }
+  match '/api/my/media/:playlist_title' => 'my_media#get_media', :constraints => { :playlist_title => /[^\/]+/ }, :defaults => { :format => 'json' }
 
   # Canvas embedded application support.
   match '/canvas/embedded/*url' => 'canvas_lti#embedded', :defaults => { :format => 'html' }
   match '/canvas/lti_roster_photos' => 'canvas_lti#lti_roster_photos', :defaults => { :format => 'xml' }
-  match '/canvas/lti_course_provision' => 'canvas_lti#lti_course_provision', :defaults => { :format => 'xml' }
+  match '/canvas/lti_course_provision_account_navigation' => 'canvas_lti#lti_course_provision_account_navigation', :defaults => { :format => 'xml' }
+  match '/canvas/lti_course_provision_user_navigation' => 'canvas_lti#lti_course_provision_user_navigation', :defaults => { :format => 'xml' }
   match '/canvas/lti_user_provision' => 'canvas_lti#lti_user_provision', :defaults => { :format => 'xml' }
   match '/canvas/lti_course_add_user' => 'canvas_lti#lti_course_add_user', :defaults => { :format => 'xml' }
 
