@@ -14,6 +14,7 @@
       $scope.userSearchResultsCount = 0;
       $scope.noSearchTextAlert = false;
       $scope.noSearchResultsNotice = false;
+      $scope.noUserSelectedAlert = false;
     };
 
     var resetImportState = function() {
@@ -26,14 +27,24 @@
     $scope.resetForm = function() {
       $scope.searchTextType = 'text';
       $scope.search_text = '';
+      $scope.searchTypeNotice = '';
       $scope.showAlerts = false;
       resetSearchState();
       resetImportState();
     };
 
+    var setSearchTypeNotice = function() {
+      if ($scope.search_type === 'student_id') {
+        $scope.searchTypeNotice = 'Student IDs must be an exact match.';
+      } else if ($scope.search_type === 'ldap_user_id') {
+        $scope.searchTypeNotice = 'CalNet UIDs must be an exact match.';
+      } else {
+        $scope.searchTypeNotice = '';
+      }
+    };
+
     // Initialize upon load
     $scope.resetForm();
-
     $scope.search_type = 'name';
     $scope.userRoles = [
       {
@@ -76,6 +87,26 @@
       });
     };
 
+    var invalidSearchForm = function() {
+      if ($scope.search_text === '') {
+        $scope.showAlerts = true;
+        $scope.noSearchTextAlert = true;
+        $scope.isLoading = false;
+        return true;
+      }
+      return false;
+    };
+
+    var invalidAddUserForm = function() {
+      if ($scope.selectedUser === null) {
+        $scope.noUserSelectedAlert = true;
+        $scope.showAlerts = true;
+        return true;
+      }
+      $scope.noUserSelectedAlert = false;
+      return false;
+    };
+
     $scope.updateSearchTextType = function() {
       $scope.searchTextType = (['student_id', 'ldap_user_id'].indexOf($scope.search_type) === -1) ? 'text' : 'number';
     };
@@ -84,11 +115,7 @@
       resetSearchState();
       resetImportState();
 
-      // require search text
-      if ($scope.search_text === '') {
-        $scope.showAlerts = true;
-        $scope.noSearchTextAlert = true;
-        $scope.isLoading = false;
+      if (invalidSearchForm()) {
         return false;
       }
 
@@ -113,6 +140,7 @@
             $scope.selectedUser = data.users[0];
           }
         } else {
+          setSearchTypeNotice();
           $scope.userSearchResultsCount = 0;
           $scope.noSearchResultsNotice = true;
         }
@@ -131,6 +159,9 @@
     };
 
     $scope.addUser = function() {
+      if (invalidAddUserForm()) {
+        return false;
+      }
       $scope.showUsersArea = false;
       $scope.isLoading = true;
       $scope.showAlerts = true;

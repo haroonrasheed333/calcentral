@@ -3,7 +3,7 @@ require "spec_helper"
 feature "act_as_user" do
   before do
     @random_id = Time.now.to_f.to_s.gsub(".", "")
-    @fake_events_list = Google::EventsList.new(fake: true)
+    @fake_events_list = GoogleApps::EventsList.new(fake: true)
     User::Auth.new_or_update_superuser! "238382"
     User::Auth.new_or_update_test_user! "2040"
     User::Auth.new_or_update_test_user! "1234"
@@ -84,7 +84,51 @@ feature "act_as_user" do
     viewed_user.uid.should == viewed_user_uid
   end
 
-  scenario "switch to another user without clicking stop acting as" do
+  scenario "check the footer message for a user that has logged in" do
+    # disabling the cache_warmer while we're switching back and forth between users
+    # The switching back triggers a cache invalidation, while the warming thread is still running.
+    Calcentral::USER_CACHE_WARMER.stub(:warm).and_return(nil)
+
+
+    login_with_cas "238382"
+    act_as_user '61889'
+
+    page.driver.post '/api/my/record_first_login'
+    page.status_code.should == 204
+
+    visit "/api/my/status"
+    response = JSON.parse(page.body)
+    response['uid'].should == '61889'
+    response['firstLoginAt'].should be_nil
+
+    visit "/settings"
+    html = page.body
+    page.body.should =~ /You're currently viewing as.+last logged on/m
+    # Note: it's possible to check for hardcoded text with regular expressions on the
+    # rendered html, but there's no apparent way to detect the text rendered by angular
+  end
+
+  scenario "check the footer message for a user that has never logged in" do
+    random_id = Time.now.to_f.to_s.gsub(".", "")
+    login_with_cas "238382"
+    act_as_user random_id
+
+    page.driver.post '/api/my/record_first_login'
+    page.status_code.should == 204
+
+    visit "/api/my/status"
+    response = JSON.parse(page.body)
+    response['uid'].should == random_id
+    response['firstLoginAt'].should be_nil
+
+    visit "/settings"
+    html = page.body
+    page.body.should =~ /You're currently viewing as.+who has never logged in to CalCentral/m
+    # Note: it's possible to check for hardcoded text with regular expressions on the
+    # rendered html, but there's no apparent way to detect the text rendered by angular
+  end
+
+  scenario "check the act-as footer text" do
     # disabling the cache_warmer while we're switching back and forth between users
     # The switching back triggers a cache invalidation, while the warming thread is still running.
     Calcentral::USER_CACHE_WARMER.stub(:warm).and_return(nil)
@@ -135,8 +179,8 @@ feature "act_as_user" do
 
   scenario "making sure act_as doesn't expose google data for non-fake users", :testext => true do
     Calcentral::USER_CACHE_WARMER.stub(:warm).and_return(nil)
-    Google::Proxy.stub(:access_granted?).and_return(true)
-    Google::EventsList.stub(:new).and_return(@fake_events_list)
+    GoogleApps::Proxy.stub(:access_granted?).and_return(true)
+    GoogleApps::EventsList.stub(:new).and_return(@fake_events_list)
     User::Auth.new_or_update_superuser! "2040"
     User::Data.stub(:where, :uid => '2040').and_return("tricking the first login check")
     %w(238382 2040 11002820).each do |user|
