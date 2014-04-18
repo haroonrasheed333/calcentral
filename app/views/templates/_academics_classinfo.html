@@ -132,7 +132,8 @@
                     <select data-ng-model="selectedVideo" data-ng-options="video.lecture for video in videos"></select>
                   </div>
                   <div class="cc-youtube-video">
-                    <div data-cc-youtube-directive link="selectedVideo.link"></div>
+                    <!-- <div data-cc-youtube-directive code="{{selectedVideo.id}}" id="player"></div> -->
+                    <div id="player"></div>
                   </div>
                 </div>
                 <div data-ng-if="api.user.profile.features.podcasts">
