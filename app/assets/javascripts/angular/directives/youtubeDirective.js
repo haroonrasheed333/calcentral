@@ -22,13 +22,16 @@
 (function(angular) {
   'use strict';
 
-  angular.module('calcentral.directives').directive('ccYoutubeDirective', ['youtubePlayer', function(youtubePlayerApi) {
+  angular.module('calcentral.directives').directive('ccYoutubeDirective', ['youtubePlayerApi', function(youtubePlayerApi) {
     console.log("ccYoutubeDirective1");
     return {
       restrict: 'AEC',
       link: function(scope,element,attrs) {
-        youtubePlayerApi.playerId = attrs.id;
-        youtubePlayerApi.videoId = attrs.code;
+        // youtubePlayerApi.playerId = attrs.id;
+        // youtubePlayerApi.videoId = attrs.code;
+        youtubePlayerApi.bindPlayer(attrs.id);
+        youtubePlayerApi.setVideoId(attrs.code);
+        youtubePlayerApi.loadPlayer();
       }
     };
   }]);

@@ -129,10 +129,14 @@
                 <div data-ng-bind="videoErrorMessage"></div>
                 <div data-ng-if="videos">
                   <div class="cc-select cc-academics-webcast-select">
-                    <select data-ng-model="selectedVideo" data-ng-options="video.lecture for video in videos"></select>
+                    <select
+                      data-ng-model="selectedVideo"
+                      data-ng-options="video.lecture for video in videos"
+                      data-ng-change="launch(selectedVideo.id, selectedVideo.title)">
+                    </select>
                   </div>
                   <div class="cc-youtube-video">
-                    <!-- <div data-cc-youtube-directive code="{{selectedVideo.id}}" id="player"></div> -->
+                    <!-- <div data-cc-youtube-directive code="{{selectedVideo.id}}" id="placeholder"></div> -->
                     <div id="player"></div>
                   </div>
                 </div>
