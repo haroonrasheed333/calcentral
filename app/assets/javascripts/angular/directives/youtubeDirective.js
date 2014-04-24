@@ -11,7 +11,8 @@
       } else if (contentType === 'video') {
         return videotemplate;
       }
-    }
+    };
+
     return {
       restrict: 'ACE',
       scope: {
@@ -22,7 +23,7 @@
       template: function(element, attrs) {
         return getTemplate(attrs.content);
       },
-      link: function(scope, element, attrs) {
+      link: function(scope) {
         scope.$watch('video', function(value) {
           var vid = scope.$eval(value);
           var videoid = vid.video.id;
@@ -30,15 +31,16 @@
           var content = vid.content;
 
           if (videoid && content === 'image') {
-            var imageUrl = 'http://img.youtube.com/vi/' + videoid + '/maxresdefault.jpg'
+            var imageUrl = 'http://img.youtube.com/vi/' + videoid + '/maxresdefault.jpg';
             scope.imageUrl = $sce.trustAsResourceUrl(imageUrl);
           } else if (videourl && content === 'video') {
-            var videoUrl = videourl + '&autoplay=1'
+            var videoUrl = videourl + '&autoplay=1';
             scope.videoUrl = $sce.trustAsResourceUrl(videoUrl);
           }
         });
       }
-    }
+    };
+
   });
 
 })(window.angular);

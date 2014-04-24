@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 describe EtsBlog::Alerts do
@@ -9,6 +11,8 @@ describe EtsBlog::Alerts do
   let(:bad_xml) { '<xml><chicken>' }
   let(:unexpected_xml) { '<xml><node><chicken>egg</chicken></node></xml>' }
   let(:empty_xml) { '<xml></xml>' }
+  let(:xml_with_no_teaser){ Rails.root.join('fixtures', 'xml', 'app_alerts_feed_no_teaser.xml') }
+  let(:xml_multibye_diacriticals) { Rails.root.join('fixtures', 'xml', 'app_alerts_feed_diacriticals.xml') }
 
   context "failures" do
     it "not finding fake xml feed on disk should return nil" do
@@ -39,6 +43,12 @@ describe EtsBlog::Alerts do
       alert.is_a?(Hash)
       alert.count.should == 4
     end
+    it "the xml alert is missing a teaser" do
+      fake_proxy.stub(:xml_source).and_return(xml_with_no_teaser)
+      alert = fake_proxy.get_latest
+      alert.is_a?(Hash)
+      alert.count.should == 3
+    end
     it "Alerts.get_latest formats and returns the latest single well-formed feed message" do
       alert = fake_proxy.get_latest
       alert[:title].should == 'CalCentral Scheduled Upgrade (Test Announce Only)'
@@ -46,6 +56,13 @@ describe EtsBlog::Alerts do
       alert[:url].should == 'http://ets-dev.berkeley.edu/news/calcentral-scheduled-upgrade-test-announce-only'
       alert[:timestamp].is_a?(Hash).should be_true
       alert[:timestamp][:epoch].should == 1393257625
+    end
+    it "handling multi-byte diacritical strings in the reponse" do
+      fake_proxy.stub(:xml_source).and_return(xml_multibye_diacriticals)
+      alert = fake_proxy.get_latest
+      alert[:title].should == '¡El Señor González se zampó un extraño sándwich de vodka y ajo! (¢, ®, ™, ©, •, ÷, –, ¿)'
+      alert[:url].should == 'hדג סקרן שט בים מאוכזב ולפתע מצא לו חברה'
+      alert[:teaser].should == 'جامع الحروف عند البلغاء يطلق على الكلام المركب من جميع حروف التهجي بدون تكرار أحدها في لفظ واحد، أما في لفظين فهو جائز'
     end
   end
 

@@ -43,6 +43,7 @@ features:
   research: true
   app_alerts: true
   cal1card: true
+  reauthentication: true
 
 cache:
   store: "memory"
@@ -55,6 +56,7 @@ cache:
     MyCampusLinks: <%= 1.day %>
     MyClasses::Merged: <%= 1.day %>
     Financials::MyFinancials: <%= 1.day %>
+    Finaid::MyFinAid: <%= 1.day %>
     Cal1card::MyCal1card: <%= 1.day %>
     MyGroups::Merged: <%= 1.day %>
     MyTasks::Merged: <%= 1.day %>

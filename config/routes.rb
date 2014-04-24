@@ -24,6 +24,7 @@ Calcentral::Application.routes.draw do
   get '/api/my/badges' => 'my_badges#get_feed', :as => :my_badges, :defaults => { :format => 'json' }
   get '/api/my/academics' => 'my_academics#get_feed', :as => :my_academics, :defaults => { :format => 'json' }
   get '/api/my/financials' => 'my_financials#get_feed', :as => :my_financials, :defaults => {:format => 'json'}
+  get '/api/my/finaid' => 'my_finaid#get_feed', :as => :my_finaid, :defaults => {:format => 'json'}
   get '/api/my/cal1card' => 'my_cal1card#get_feed', :as => :my_cal1card, :defaults => {:format => 'json'}
   get '/api/my/campuslinks' => 'my_campus_links#get_feed', :as => :my_campus_links, :defaults => { :format => 'json' }
   get '/api/my/campuslinks/expire' => 'my_campus_links#expire'
@@ -48,7 +49,7 @@ Calcentral::Application.routes.draw do
   get '/canvas/lti_course_add_user' => 'canvas_lti#lti_course_add_user', :defaults => { :format => 'xml' }
 
   # A Canvas course ID of "embedded" means to retrieve from session properties.
-  get '/api/academics/canvas/course_user_profile' => 'canvas#course_user_profile', :defaults => { :format => 'json' }
+  get '/api/academics/canvas/course_user_roles' => 'canvas_course_add_user#course_user_roles', :defaults => { :format => 'json' }
   get '/api/academics/canvas/external_tools' => 'canvas#external_tools', :defaults => { :format => 'json' }
   get '/api/academics/rosters/canvas/:canvas_course_id' => 'canvas_rosters#get_feed', :as => :canvas_roster, :defaults => { :format => 'json' }
   get '/api/academics/rosters/campus/:campus_course_id' => 'campus_rosters#get_feed', :as => :campus_roster, :defaults => { :format => 'json' }
