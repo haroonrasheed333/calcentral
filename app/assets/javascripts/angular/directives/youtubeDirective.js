@@ -1,42 +1,36 @@
 (function(angular) {
   'use strict';
 
-  angular.module('calcentral.directives').directive('ccYoutubeDirective', function($sce) {
-    var imagetemplate = '<div id="image-placeholder"><img ng-src="{{imageUrl}}" class="cc-youtube-thumbnail-image"></img><div class="cc-youtube-thumbnail-button"></div></div>';
-    var videotemplate = '<div id="video-placeholder"><iframe type="text/html" width="100%" height="100%" src="{{videoUrl}}" frameborder="0" allowfullscreen></iframe></div>';
-
-    var getTemplate = function(contentType) {
-      if (contentType === 'image') {
-        return imagetemplate;
-      } else if (contentType === 'video') {
-        return videotemplate;
-      }
-    };
-
+  angular.module('calcentral.directives').directive('ccYoutubeDirective', function($sce, $compile) {
     return {
       restrict: 'ACE',
-      scope: {
-        video: '@video',
-        content: '=content'
-      },
       replace: true,
-      template: function(element, attrs) {
-        return getTemplate(attrs.content);
-      },
-      link: function(scope) {
-        scope.$watch('video', function(value) {
-          var vid = scope.$eval(value);
-          var videoid = vid.video.id;
-          var videourl = vid.video.link;
-          var content = vid.content;
+      link: function(scope, elem, attrs) {
+        scope.$watch(attrs.ccYoutubeDirective, function(value) {
+          var videoid = value;
+          var videourl = 'https://www.youtube.com/embed/' + videoid + '?version=3&f=playlists&app=youtube_gdata&showinfo=0&theme=light&modestbranding=1&autoplay=1';
+          var imageUrl = $sce.trustAsResourceUrl('http://img.youtube.com/vi/' + videoid + '/maxresdefault.jpg');
 
-          if (videoid && content === 'image') {
-            var imageUrl = 'http://img.youtube.com/vi/' + videoid + '/maxresdefault.jpg';
-            scope.imageUrl = $sce.trustAsResourceUrl(imageUrl);
-          } else if (videourl && content === 'video') {
-            var videoUrl = videourl + '&autoplay=1';
-            scope.videoUrl = $sce.trustAsResourceUrl(videoUrl);
+          if (videoid) {
+            angular.element(document.querySelector('#video-placeholder')).remove();
+            angular.element(document.querySelector('#image-placeholder')).remove();
+            var imagetemplate = '<div id="image-placeholder" data-ng-click="loadVideo=1" data-ng-init="loadVideo=0"><img ng-src="' + imageUrl + '" class="cc-youtube-thumbnail-image"></img><div class="cc-youtube-thumbnail-button"></div></div>';
+            var el = angular.element(imagetemplate);
+            var compiled = $compile(el);
+            elem.append(el);
+            compiled(scope);
           }
+
+          elem.on('click', function() {
+            angular.element(document.querySelector('#image-placeholder')).remove();
+            angular.element(document.querySelector('#video-placeholder')).remove();
+            var videotemplate = '<div id="video-placeholder" class="cc-youtube-video"><iframe type="text/html" width="100%" height="100%" src=' + videourl + ' frameborder="0" allowfullscreen></iframe></div>';
+            var el = angular.element(videotemplate);
+            var compiled = $compile(el);
+            elem.append(el);
+            compiled(scope);
+          });
+
         });
       }
     };
