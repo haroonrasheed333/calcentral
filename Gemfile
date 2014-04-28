@@ -111,18 +111,18 @@ gem "closure-compiler", "~> 1.1.10"
 
 # Font awesome - an icon font
 # https://github.com/bokmann/font-awesome-rails
-gem "font-awesome-rails", "~> 4.0.0.0"
+gem "font-awesome-rails", "~> 4.0.3.1"
 
 # Moment.js
 # https://github.com/derekprior/momentjs-rails
-gem "momentjs-rails", "~> 2.2.1"
+gem "momentjs-rails", "~> 2.5.1"
 
 # Placeholder.js
 # https://github.com/ets-berkeley-edu/placeholder-gem
 gem "placeholder-gem", "~> 3.0.2"
 
 # Raven.js - library for JS error logging
-gem "ravenjs-gem", "~> 1.0.7.0"
+gem "ravenjs-gem", "~> 1.1.14"
 
 # ngmin-rails
 # https://github.com/jasonm/ngmin-rails
